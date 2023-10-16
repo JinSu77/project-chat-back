@@ -1,7 +1,6 @@
 package com.example.api.controllers;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,11 +37,6 @@ public class UserController {
         }
 
         return ResponseEntity.ok(response);
-    }
-
-    @GetMapping(value = "/login")
-    public @ResponseBody ResponseEntity<Object> login() {
-        return ResponseHandler.generateResponse(HttpStatus.OK, "login");
     }
 
     @PostMapping(value = "/register")
