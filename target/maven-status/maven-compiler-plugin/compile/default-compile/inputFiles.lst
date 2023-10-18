@@ -1,10 +1,15 @@
 /app/src/main/java/com/example/api/controllers/AuthController.java
 /app/src/main/java/com/example/api/handlers/ResponseHandler.java
-/app/src/main/java/com/example/api/controllers/UserController.java
+/app/src/main/java/com/example/api/validation/Users/UserDto.java
 /app/src/main/java/com/example/api/handlers/ValidationErrorHandler.java
 /app/src/main/java/com/example/api/controllers/HomeController.java
 /app/src/main/java/com/example/api/repositories/UserRepository.java
+/app/src/main/java/com/example/api/models/Role.java
 /app/src/main/java/com/example/api/validation/Users/StoreUserDTO.java
-/app/src/main/java/com/example/api/ApiApplication.java
 /app/src/main/java/com/example/api/configuration/SecurityConfig.java
 /app/src/main/java/com/example/api/models/User.java
+/app/src/main/java/com/example/api/services/User/UserService.java
+/app/src/main/java/com/example/api/services/User/UserServiceImpl.java
+/app/src/main/java/com/example/api/controllers/UserController.java
+/app/src/main/java/com/example/api/repositories/RoleRepository.java
+/app/src/main/java/com/example/api/ApiApplication.java

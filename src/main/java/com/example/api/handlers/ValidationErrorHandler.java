@@ -26,6 +26,10 @@ public class ValidationErrorHandler {
 
     result.put("errors", errors);
 
-    return new ResponseEntity<>(result, HttpStatus.UNPROCESSABLE_ENTITY);
+    Map<String, Object> response = new HashMap<String, Object>();
+
+    response.put("data", result);
+
+    return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
   }
 }
