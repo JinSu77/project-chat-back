@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.api.handlers.ResponseHandler;
 import com.example.api.services.User.UserService;
+import com.example.api.validation.Auth.UserLoginDTO;
 import com.example.api.validation.Users.UserDto;
 
 import jakarta.validation.Valid;
@@ -37,8 +38,15 @@ public class AuthController {
     }
 
     @PostMapping(value = "/login")
-    public @ResponseBody ResponseEntity<Object> login() {
-        return ResponseHandler.generateResponse(HttpStatus.OK, "login");
+    public @ResponseBody ResponseEntity<Object> login(@Valid @RequestBody UserLoginDTO userLoginDTO) {
+        try {
+            userService.login(userLoginDTO);
+
+            return ResponseHandler.generateResponse(HttpStatus.OK, "logged in successfully");
+
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
+        }
     }
 
     @PostMapping(value = "/logout")

@@ -10,6 +10,8 @@
 /app/src/main/java/com/example/api/models/User.java
 /app/src/main/java/com/example/api/services/User/UserService.java
 /app/src/main/java/com/example/api/services/User/UserServiceImpl.java
+/app/src/main/java/com/example/api/validation/Auth/UserLoginDTO.java
 /app/src/main/java/com/example/api/controllers/UserController.java
 /app/src/main/java/com/example/api/repositories/RoleRepository.java
+/app/src/main/java/com/example/api/services/Auth/CustomUserDetailsService.java
 /app/src/main/java/com/example/api/ApiApplication.java

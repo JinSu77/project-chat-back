@@ -3,6 +3,7 @@ package com.example.api.services.User;
 import java.util.List;
 
 import com.example.api.models.User;
+import com.example.api.validation.Auth.UserLoginDTO;
 import com.example.api.validation.Users.UserDto;
 
 public interface UserService {
@@ -11,4 +12,6 @@ public interface UserService {
     User findUserByUsername(String username);
 
     List<UserDto> findAllUsers();
+
+    void login(UserLoginDTO userLoginDTO);
 }

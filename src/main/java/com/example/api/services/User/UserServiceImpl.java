@@ -1,5 +1,6 @@
 package com.example.api.services.User;
 
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -7,6 +8,7 @@ import com.example.api.models.Role;
 import com.example.api.models.User;
 import com.example.api.repositories.RoleRepository;
 import com.example.api.repositories.UserRepository;
+import com.example.api.validation.Auth.UserLoginDTO;
 import com.example.api.validation.Users.UserDto;
 
 import java.util.Arrays;
@@ -85,5 +87,18 @@ public class UserServiceImpl implements UserService {
         role.setName("ROLE_ADMIN");
 
         return roleRepository.save(role);
+    }
+
+    @Override
+    public void login(UserLoginDTO userLoginDTO) {
+        User user = userRepository.findByUsername(userLoginDTO.getUsername());
+
+        if (user == null) {
+            throw new RuntimeException(String.format("Username %s not found", userLoginDTO.getUsername()));
+        }
+        
+        if (! passwordEncoder.matches(userLoginDTO.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
     }
 }
