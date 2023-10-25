@@ -3,11 +3,11 @@
 /app/src/main/java/com/example/api/validation/Users/UserDto.java
 /app/src/main/java/com/example/api/controllers/MessageController.java
 /app/src/main/java/com/example/api/handlers/ValidationErrorHandler.java
-/app/src/main/java/com/example/api/services/Auth/JwtUtil.java
 /app/src/main/java/com/example/api/repositories/MessageRepository.java
 /app/src/main/java/com/example/api/controllers/HomeController.java
 /app/src/main/java/com/example/api/repositories/UserRepository.java
 /app/src/main/java/com/example/api/models/Role.java
+/app/src/main/java/com/example/api/validation/Users/StoreUserDTO.java
 /app/src/main/java/com/example/api/services/User/UserServiceImpl.java
 /app/src/main/java/com/example/api/services/User/UserService.java
 /app/src/main/java/com/example/api/models/User.java
@@ -15,8 +15,8 @@
 /app/src/main/java/com/example/api/validation/Auth/UserLoginDTO.java
 /app/src/main/java/com/example/api/services/Messages/MessagesService.java
 /app/src/main/java/com/example/api/controllers/UserController.java
-/app/src/main/java/com/example/api/services/Auth/JwtAuthorizationFilter.java
 /app/src/main/java/com/example/api/repositories/RoleRepository.java
+/app/src/main/java/com/example/api/services/Auth/CustomUserDetailsService.java
 /app/src/main/java/com/example/api/models/Message.java
 /app/src/main/java/com/example/api/validation/Messages/MessageDTO.java
 /app/src/main/java/com/example/api/ApiApplication.java

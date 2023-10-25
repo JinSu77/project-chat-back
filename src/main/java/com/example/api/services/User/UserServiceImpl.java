@@ -1,5 +1,6 @@
 package com.example.api.services.User;
 
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +45,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        Role role = roleRepository.findByName("USER");
+        Role role = roleRepository.findByName("ROLE_ADMIN");
 
         if(role == null){
             role = checkRoleExist();
@@ -74,17 +75,22 @@ public class UserServiceImpl implements UserService {
 
         return userDto;
     }
+
+    @Override
+    public User findUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
     
     private Role checkRoleExist(){
         Role role = new Role();
 
-        role.setName("USER");
+        role.setName("ROLE_ADMIN");
 
         return roleRepository.save(role);
     }
 
     @Override
-    public User login(UserLoginDTO userLoginDTO) {
+    public void login(UserLoginDTO userLoginDTO) {
         User user = userRepository.findByUsername(userLoginDTO.getUsername());
 
         if (user == null) {
@@ -94,7 +100,5 @@ public class UserServiceImpl implements UserService {
         if (! passwordEncoder.matches(userLoginDTO.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
-
-        return user;
     }
 }
