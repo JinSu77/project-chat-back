@@ -28,7 +28,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorizeRequests -> 
                 authorizeRequests
                     .requestMatchers(
-                        "/auth/**"
+                        "/auth/**",
+                        "/messages",
+                        "/messages/{messageId}"
                     ).permitAll()
                     .anyRequest()
                     .authenticated()
