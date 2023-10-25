@@ -9,9 +9,7 @@ import com.example.api.validation.Users.UserDto;
 public interface UserService {
     void saveUser(UserDto userDto);
 
-    User findUserByUsername(String username);
-
     List<UserDto> findAllUsers();
 
-    void login(UserLoginDTO userLoginDTO);
+    User login(UserLoginDTO userLoginDTO);
 }

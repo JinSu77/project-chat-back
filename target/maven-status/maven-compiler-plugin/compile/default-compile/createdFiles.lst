@@ -1,12 +1,3 @@
-com/example/api/handlers/ValidationErrorHandler.class
 com/example/api/repositories/MessageRepository.class
-com/example/api/validation/Users/StoreUserDTO.class
-com/example/api/ApiApplication.class
-com/example/api/models/Message.class
-com/example/api/models/User.class
-com/example/api/repositories/UserRepository.class
-com/example/api/handlers/ResponseHandler.class
-com/example/api/controllers/HomeController.class
 com/example/api/controllers/MessageController.class
-com/example/api/controllers/UserController.class
-com/example/api/handlers/ResponseHandler.class
+com/example/api/models/Message.class
