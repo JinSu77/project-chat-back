@@ -1,11 +1,7 @@
 package com.example.api.models;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -17,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -51,4 +48,11 @@ public class User {
             joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
             inverseJoinColumns={@JoinColumn(name="ROLE_ID", referencedColumnName="ID")})
     private List<Role> roles = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private List<Message> messageList;
+
+    public List<Message> getMessageList() { return messageList; }
+    public void setMessageList(List<Message> messageList) { this.messageList = messageList; }
 }
