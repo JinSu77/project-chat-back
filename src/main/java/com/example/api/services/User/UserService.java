@@ -8,8 +8,6 @@ import com.example.api.validation.Users.UserDto;
 
 public interface UserService {
     void saveUser(UserDto userDto);
-
     List<UserDto> findAllUsers();
-
     User login(UserLoginDTO userLoginDTO);
 }

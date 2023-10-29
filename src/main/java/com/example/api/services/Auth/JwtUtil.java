@@ -12,10 +12,8 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class JwtUtil {
-
-
     private final String secret_key = "change_this_secret_key"; // TODO: change this secret key
-    private long accessTokenValidity = 60*60;
+    private long accessTokenValidity = 20;
 
     private final JwtParser jwtParser;
 
@@ -79,11 +77,5 @@ public class JwtUtil {
     public String getUsername(String token) {
         Claims claims = parseJwtClaims(token);
         return claims.getSubject();
-    }
-
-    public void revokeToken(HttpServletRequest request) {
-        String token = resolveToken(request);
-        Claims claims = parseJwtClaims(token);
-        claims.setExpiration(Date.from(new Date().toInstant()));
     }
 }

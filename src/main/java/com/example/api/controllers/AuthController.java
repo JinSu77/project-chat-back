@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.api.handlers.ResponseHandler;
 import com.example.api.models.User;
+import com.example.api.repositories.UserRepository;
 import com.example.api.services.Auth.JwtUtil;
 import com.example.api.services.User.UserService;
 import com.example.api.validation.Auth.UserLoginDTO;
@@ -29,10 +30,12 @@ import jakarta.validation.Valid;
 @RequestMapping("/auth")
 public class AuthController {
     private JwtUtil jwtUtil;
+    private UserRepository userRepository;
     private UserService userService;
 
-    public AuthController(JwtUtil jwtUtil, UserService userService) {
+    public AuthController(JwtUtil jwtUtil, UserRepository userRepository, UserService userService) {
         this.jwtUtil = jwtUtil;
+        this.userRepository = userRepository;
         this.userService = userService;
     }
 
@@ -69,16 +72,26 @@ public class AuthController {
 
     @GetMapping(value = "/me")
     public @ResponseBody ResponseEntity<Object> me(@Nullable @RequestHeader("Authorization") String authorization) {
-        HashMap<String, Object> response = new HashMap<String, Object>();
-
-        if (authorization != null) {
-            authorization = authorization.replace("Bearer ", "");
-            String username = jwtUtil.getUsername(authorization);
-            response.put("username", username);
-            response.put("message", "You are authenticated");
-        } else {
-            response.put("message", "Unauthenticated");
+        if (authorization == null) {
+            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, "Authorization header is missing");
         }
+
+        String token = authorization.replace("Bearer ", "");
+        String username = jwtUtil.getUsername(token);
+
+        if (username == null) {
+            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid token");
+        }
+
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, "User not found");
+        }
+
+        Map<String, Object> response = new HashMap<String, Object>();
+
+        response.put("user", user);
 
         return ResponseHandler.generateResponse(HttpStatus.OK, response);
     }
