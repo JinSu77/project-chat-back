@@ -16,13 +16,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import java.lang.String;
 
+@Entity
+@Table(name = "users")
 @Getter
 @Setter
-@Entity
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,17 +48,30 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @JoinTable(
-            name="users_roles",
-            joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
-            inverseJoinColumns={@JoinColumn(name="ROLE_ID", referencedColumnName="ID")})
+        name="users_roles",
+        joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
+        inverseJoinColumns={@JoinColumn(name="ROLE_ID", referencedColumnName="ID")}
+    )
     private List<Role> roles = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private List<Message> messages;
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+        name="users_conversations",
+        joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
+        inverseJoinColumns={@JoinColumn(name="CONVERSATION_ID", referencedColumnName="ID")}
+    )
+    private List<Conversation> conversations = new ArrayList<>();
+
     public List<Message> messages() { 
         return messages; 
+    }
+
+    public List<Conversation> conversations() { 
+        return conversations; 
     }
     
     public void setMessages(List<Message> messages) { 

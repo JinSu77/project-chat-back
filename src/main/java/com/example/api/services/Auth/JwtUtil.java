@@ -2,6 +2,7 @@ package com.example.api.services.Auth;
 
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
@@ -97,5 +98,21 @@ public class JwtUtil {
         User user = userRepository.findByUsername(username);
 
         return user.getId();
+    }
+
+    public User getAuthUser(String token) {
+        String username = getAuthUsername(token);
+
+        if (username == null) {
+            throw new RuntimeException("Username not found");
+        }
+
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        return user;
     }
 }
