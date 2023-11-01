@@ -1,6 +1,8 @@
 package com.example.api.models;
 
-import java.util.HashMap;
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,17 +21,15 @@ public class Message {
     @Column(nullable = true)
     private String content;
 
+    @Column(nullable = false)
     private Integer user_id;
 
-    public HashMap<String, Object> toArray() {
-        HashMap<String, Object> message = new HashMap<String, Object>();
+    @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date created_at;
 
-        message.put("id", id);
-        message.put("content", content);
-        message.put("user_id", user_id);
-
-        return message;
-    }
+    @Column(nullable = true)
+    private Date received_at;
 
     public void setContent(String content) {
         this.content = content;
@@ -37,5 +37,9 @@ public class Message {
 
     public void setUserId(Integer user_id) {
         this.user_id = user_id;
+    }
+
+    public void setCreatedAt(Date created_at) {
+        this.created_at = created_at;
     }
 }

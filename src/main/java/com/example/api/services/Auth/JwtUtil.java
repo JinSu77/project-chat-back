@@ -6,6 +6,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
 import com.example.api.models.User;
+import com.example.api.repositories.UserRepository;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -16,20 +17,24 @@ public class JwtUtil {
     private long accessTokenValidity = 20;
 
     private final JwtParser jwtParser;
+    private final UserRepository userRepository;
 
     private final String TOKEN_HEADER = "Authorization";
     private final String TOKEN_PREFIX = "Bearer ";
 
-    public JwtUtil(){
+    public JwtUtil(UserRepository userRepository) {
         this.jwtParser = Jwts.parser().setSigningKey(secret_key);
+        this.userRepository = userRepository;
     }
 
     public String createToken(User user) {
         Claims claims = Jwts.claims().setSubject(user.getUsername());
         claims.put("firstName",user.getFirstName());
         claims.put("lastName",user.getLastName());
+        
         Date tokenCreateTime = new Date();
         Date tokenValidity = new Date(tokenCreateTime.getTime() + TimeUnit.MINUTES.toMillis(accessTokenValidity));
+        
         return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(tokenValidity)
@@ -44,9 +49,11 @@ public class JwtUtil {
     public Claims resolveClaims(HttpServletRequest req) {
         try {
             String token = resolveToken(req);
+
             if (token != null) {
                 return parseJwtClaims(token);
             }
+
             return null;
         } catch (ExpiredJwtException ex) {
             req.setAttribute("expired", ex.getMessage());
@@ -60,9 +67,11 @@ public class JwtUtil {
     public String resolveToken(HttpServletRequest request) {
 
         String bearerToken = request.getHeader(TOKEN_HEADER);
+
         if (bearerToken != null && bearerToken.startsWith(TOKEN_PREFIX)) {
             return bearerToken.substring(TOKEN_PREFIX.length());
         }
+
         return null;
     }
 
@@ -74,8 +83,19 @@ public class JwtUtil {
         }
     }
 
-    public String getUsername(String token) {
+    public String getAuthUsername(String token) {
         Claims claims = parseJwtClaims(token);
+
         return claims.getSubject();
+    }
+
+    public Integer getAuthUserId(String authorization) {
+        String token = authorization.replace("Bearer ", "");
+
+        String username = getAuthUsername(token);
+
+        User user = userRepository.findByUsername(username);
+
+        return user.getId();
     }
 }

@@ -53,13 +53,13 @@ public class User {
 
     @OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private List<Message> messageList;
+    private List<Message> messages;
 
-    public List<Message> getMessageList() { 
-        return messageList; 
+    public List<Message> messages() { 
+        return messages; 
     }
     
-    public void setMessageList(List<Message> messageList) { 
-        this.messageList = messageList; 
+    public void setMessages(List<Message> messages) { 
+        this.messages = messages; 
     }
 }
