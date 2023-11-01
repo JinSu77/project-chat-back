@@ -44,7 +44,13 @@ public class AuthController {
         try {
             userService.saveUser(userDto);
 
-            return ResponseHandler.generateResponse(HttpStatus.OK, "User registered successfully");
+            User user = userRepository.findByUsername(userDto.getUsername());
+
+            Map<String, Object> response = new HashMap<String, Object>();
+
+            response.put("user", user);
+
+            return ResponseHandler.generateResponse(HttpStatus.OK, response);
         } catch (Exception e) {
             return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
         }
@@ -77,7 +83,7 @@ public class AuthController {
         }
 
         String token = authorization.replace("Bearer ", "");
-        String username = jwtUtil.getUsername(token);
+        String username = jwtUtil.getAuthUsername(token);
 
         if (username == null) {
             return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid token");

@@ -17,7 +17,9 @@ public class MessagesService {
 
     public List<Message> getAllMessages() {
         List<Message> messages = new ArrayList<Message>();
+        
         messageRepository.findAll().forEach(messages::add);
+
         return messages;
     }
 
@@ -29,14 +31,13 @@ public class MessagesService {
     public void delete(int id)   
     {  
         Message message = messageRepository.findById(id).get();
+
         messageRepository.delete(message);
     }  
 
     public Message saveMessage(MessageDTO messageDTO) {
-        Message message = new Message();
-        message.setContent(messageDTO.getContent());
-        message.setUserId(messageDTO.getUser_id());
-        Message savedMessage = messageRepository.save(message);
-        return savedMessage;
+        Message message = messageDTO.toMessage();
+
+        return messageRepository.save(message);
     }
 }
