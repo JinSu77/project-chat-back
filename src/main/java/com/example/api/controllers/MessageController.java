@@ -28,7 +28,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/messages")
 public class MessageController {
     @Autowired
-    MessagesService messagesService;
+    private MessagesService messagesService;
 
     @Autowired
     private JwtUtil jwtUtil;
