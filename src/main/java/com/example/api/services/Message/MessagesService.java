@@ -11,7 +11,7 @@ import com.example.api.repositories.MessageRepository;
 import com.example.api.validation.Messages.MessageDTO;
 
 @Service
-public class MessagesService {
+public class MessagesService implements IMessagesService {
     @Autowired
     MessageRepository messageRepository;
 
@@ -23,12 +23,12 @@ public class MessagesService {
         return messages;
     }
 
-    public Message getMessageById(int id)   
+    public Message getMessageById(Integer id)   
     {
         return messageRepository.findById(id).get();
     }
 
-    public void delete(int id)   
+    public void delete(Integer id)   
     {  
         Message message = messageRepository.findById(id).get();
 
