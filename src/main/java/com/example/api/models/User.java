@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -52,26 +53,31 @@ public class User {
         joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
         inverseJoinColumns={@JoinColumn(name="ROLE_ID", referencedColumnName="ID")}
     )
-    private List<Role> roles = new ArrayList<>();
+    private List<Role> roles = new ArrayList<Role>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private List<Message> messages;
+    private List<Message> messages = new ArrayList<Message>();
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
         name="users_conversations",
         joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
         inverseJoinColumns={@JoinColumn(name="CONVERSATION_ID", referencedColumnName="ID")}
     )
-    private List<Conversation> conversations = new ArrayList<>();
+    @JsonIgnoreProperties(value = "users")
+    private List<Conversation> conversations = new ArrayList<Conversation>();
+
+    public List<Conversation> conversations() { 
+        return conversations; 
+    }
 
     public List<Message> messages() { 
         return messages; 
     }
 
-    public List<Conversation> conversations() { 
-        return conversations; 
+    public void setConversations(List<Conversation> conversations) { 
+        this.conversations = conversations; 
     }
     
     public void setMessages(List<Message> messages) { 
