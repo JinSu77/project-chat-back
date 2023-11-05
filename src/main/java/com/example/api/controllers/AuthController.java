@@ -42,7 +42,7 @@ public class AuthController {
     @PostMapping(value = "/register")
     public @ResponseBody ResponseEntity<Object> register(@Valid @RequestBody UserDto userDto) {
         try {
-            userService.saveUser(userDto);
+            userService.save(userDto);
 
             User user = userRepository.findByUsername(userDto.getUsername());
 

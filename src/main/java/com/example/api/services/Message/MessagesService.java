@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.api.models.Message;
 import com.example.api.repositories.MessageRepository;
-import com.example.api.validation.Messages.MessageDTO;
 
 @Service
 public class MessagesService implements IMessagesService {
@@ -35,9 +34,7 @@ public class MessagesService implements IMessagesService {
         messageRepository.delete(message);
     }  
 
-    public Message saveMessage(MessageDTO messageDTO) {
-        Message message = messageDTO.toMessage();
-
-        return messageRepository.save(message);
+    public void save(Message message) {
+        messageRepository.save(message);
     }
 }
