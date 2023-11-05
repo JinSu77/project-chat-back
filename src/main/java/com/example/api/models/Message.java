@@ -24,6 +24,9 @@ public class Message {
     private String content;
 
     @Column(nullable = false)
+    private Integer conversation_id;
+
+    @Column(nullable = false)
     private Integer user_id;
 
     @Column(nullable = false)
@@ -35,6 +38,10 @@ public class Message {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public void setConversationId(Integer conversation_id) {
+        this.conversation_id = conversation_id;
     }
 
     public void setUserId(Integer user_id) {

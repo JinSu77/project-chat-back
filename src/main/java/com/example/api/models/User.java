@@ -16,7 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -55,32 +54,20 @@ public class User {
     )
     private List<Role> roles = new ArrayList<Role>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private List<Message> messages = new ArrayList<Message>();
-
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
         name="users_conversations",
         joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
         inverseJoinColumns={@JoinColumn(name="CONVERSATION_ID", referencedColumnName="ID")}
     )
-    @JsonIgnoreProperties(value = "users")
+    @JsonIgnoreProperties(value = {"participants", "messages"})
     private List<Conversation> conversations = new ArrayList<Conversation>();
 
     public List<Conversation> conversations() { 
         return conversations; 
     }
 
-    public List<Message> messages() { 
-        return messages; 
-    }
-
     public void setConversations(List<Conversation> conversations) { 
         this.conversations = conversations; 
-    }
-    
-    public void setMessages(List<Message> messages) { 
-        this.messages = messages; 
     }
 }
