@@ -43,7 +43,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void saveUser(UserDto userDto) {
+    public void save(UserDto userDto) {
         if (userRepository.findByUsername(userDto.getUsername()) != null) {
             throw new RuntimeException(String.format("Username %s already exist", userDto.getUsername()));
         }
@@ -78,6 +78,13 @@ public class UserService implements IUserService {
         return users.stream()
                 .map((user) -> mapToUserDto(user))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User> findAllById(List<Integer> userIds) {
+        Iterable <User> users = userRepository.findAllById(userIds);
+
+        return (List<User>) users;
     }
 
     private UserDto mapToUserDto(User user){

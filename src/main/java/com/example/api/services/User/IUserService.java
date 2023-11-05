@@ -9,7 +9,8 @@ import com.example.api.validation.Users.UserDto;
 
 public interface IUserService {
     List<UserDto> findAllUsers();
+    List<User> findAllById(List<Integer> userIds);
     List<Conversation> findAllConversationsFromUser(Integer userId);
     User login(UserLoginDTO userLoginDTO);
-    void saveUser(UserDto userDto);
+    void save(UserDto userDto);
 }
