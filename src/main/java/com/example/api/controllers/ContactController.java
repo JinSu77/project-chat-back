@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.api.handlers.ResponseHandler;
 import com.example.api.models.Contact;
-import com.example.api.services.Auth.JwtUtil;
 import com.example.api.services.Contact.ContactService;
 import com.example.api.validation.Contacts.ContactDTO;
 
@@ -28,9 +27,6 @@ import jakarta.validation.Valid;
 public class ContactController {
     @Autowired
     ContactService contactService;
-
-    @Autowired
-    private JwtUtil jwtUtil;
 
     @GetMapping
     private ResponseEntity<Object> getAllContacts()
