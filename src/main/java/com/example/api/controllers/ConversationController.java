@@ -1,5 +1,6 @@
 package com.example.api.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,6 +20,13 @@ import com.example.api.models.User;
 import com.example.api.services.Auth.JwtUtil;
 import com.example.api.services.Conversation.ConversationService;
 import com.example.api.services.User.UserService;
+import com.example.api.validation.Conversations.ConversationDTO;
+
+import jakarta.validation.Valid;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @Controller
 @RequestMapping("/conversations")
@@ -68,5 +76,34 @@ public class ConversationController {
             return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
         }
     }
-    
+
+    @PostMapping()
+    public ResponseEntity<Object> createConversation(@Valid @RequestBody ConversationDTO conversationDTO, @RequestHeader("Authorization") String authorization) {
+        String token = authorization.replace("Bearer ", "");
+
+        List<User> participants = new ArrayList<User>();
+
+        try {
+            User authUser = jwtUtil.getAuthUser(token);
+
+            List<User> users = userService.findAllById(conversationDTO.getParticipantIds());
+
+            participants.add(authUser);
+            participants.addAll(users);
+
+            Conversation conversation = conversationDTO.toConversationWithoutParticipants();
+
+            conversation.setParticipants(participants);
+
+            conversationService.save(conversation);
+
+            Map<String, Object> response = Map.of(
+                "conversation", conversation
+            );
+
+            return ResponseHandler.generateResponse(HttpStatus.OK, response);
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
+        }
+    }
 }

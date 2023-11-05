@@ -7,4 +7,5 @@ import com.example.api.models.User;
 
 public interface IConversationService {
     Optional<Conversation> findUserConversationById(User user, Integer conversationId);
+    void save(Conversation conversation);
 }
