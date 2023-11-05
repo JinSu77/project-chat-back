@@ -18,12 +18,14 @@ public class MessageDTO {
     @Range(min = 1, message = "User id is required")
     private Integer user_id;
     
-    public Message toMessage() {
+    public Message toMessage(Integer conversation_id, Integer user_id) {
         Message message = new Message();
 
         message.setContent(this.content);
 
-        message.setUserId(this.user_id);
+        message.setConversationId(conversation_id);
+
+        message.setUserId(user_id);
 
         message.setCreatedAt(new Date());
 
