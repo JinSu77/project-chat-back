@@ -66,6 +66,13 @@ public class User {
     )
     @JsonIgnoreProperties(value = {"participants", "messages"})
     private List<Conversation> conversations = new ArrayList<Conversation>();
+    
+    @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    @JoinTable(
+            name="users_contacts",
+            joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
+            inverseJoinColumns={@JoinColumn(name="CONTACT_ID", referencedColumnName="ID")})
+    private List<Contact> contacts = new ArrayList<>();
 
     public List<Conversation> conversations() { 
         return conversations; 
