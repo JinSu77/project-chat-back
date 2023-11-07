@@ -22,11 +22,10 @@ import com.example.api.repositories.UserRepository;
 @RequestMapping("/users")
 public class UserController {
     @Autowired
-
     private UserRepository userRepository;
 
     @GetMapping()
-    public @ResponseBody ResponseEntity<Object> getAllUsers() {
+    public @ResponseBody ResponseEntity<Object> index() {
         Iterable<User> users = userRepository.findAll();
 
         Map<String, Object> response = new HashMap<>();
@@ -37,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public @ResponseBody ResponseEntity<Object> getUserById(@PathVariable Integer userId) {
+    public @ResponseBody ResponseEntity<Object> show(@PathVariable Integer userId) {
         Optional<User> user = userRepository.findById(userId);
 
         if (user.isEmpty()) {

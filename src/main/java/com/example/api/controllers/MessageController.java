@@ -23,7 +23,7 @@ public class MessageController {
     private MessagesService messagesService;
 
     @GetMapping
-    private ResponseEntity<Object> getAllMessages()
+    public ResponseEntity<Object> index()
     {
         List<Message> messages = messagesService.getAllMessages();
 
@@ -35,7 +35,7 @@ public class MessageController {
     }
 
     @GetMapping("/{messageId}")
-    private ResponseEntity<Object> getSingleMessage(@PathVariable("messageId") int messageId)   
+    public ResponseEntity<Object> show(@PathVariable("messageId") int messageId)   
     {  
         Message message = messagesService.getMessageById(messageId);
 
@@ -47,7 +47,7 @@ public class MessageController {
     }  
 
     @DeleteMapping("/{messageId}")  
-    private ResponseEntity<Object> deleteMessage(@PathVariable("messageId") int messageId)
+    public ResponseEntity<Object> delete(@PathVariable("messageId") int messageId)
     {  
         try {
             messagesService.delete(messageId);  

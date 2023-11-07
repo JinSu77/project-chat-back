@@ -30,7 +30,7 @@ public class ConversationMessageController {
     private JwtUtil jwtUtil;
 
     @PostMapping
-    private ResponseEntity<Object> createMessage(
+    public ResponseEntity<Object> store(
         @Valid @RequestBody MessageDTO messageDTO, 
         @RequestHeader("Authorization") String authorization, 
         @PathVariable("conversationId") Integer conversationId

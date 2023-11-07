@@ -3,6 +3,7 @@ package com.example.api.controllers;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -29,14 +30,16 @@ import jakarta.validation.Valid;
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
+    @Autowired
     private JwtUtil jwtUtil;
+
     private UserRepository userRepository;
+
+    @Autowired
     private UserService userService;
 
-    public AuthController(JwtUtil jwtUtil, UserRepository userRepository, UserService userService) {
-        this.jwtUtil = jwtUtil;
+    public AuthController(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.userService = userService;
     }
 
     @PostMapping(value = "/register")
