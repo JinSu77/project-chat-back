@@ -41,7 +41,7 @@ public class ConversationController {
     private JwtUtil jwtUtil;
 
     @GetMapping()
-    private ResponseEntity<Object> getConversations(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<Object> index(@RequestHeader("Authorization") String token) {
         Integer userId = jwtUtil.getAuthUserId(token);
 
         List<Conversation> conversations = userService.findAllConversationsFromUser(userId);
@@ -54,7 +54,7 @@ public class ConversationController {
     }
 
     @GetMapping("/{conversationId}")
-    private ResponseEntity<Object> getConversation(@RequestHeader("Authorization") String authorization, @PathVariable("conversationId") Integer conversationId) {
+    public ResponseEntity<Object> show(@RequestHeader("Authorization") String authorization, @PathVariable("conversationId") Integer conversationId) {
 
         String token = authorization.replace("Bearer ", "");
 
@@ -78,7 +78,7 @@ public class ConversationController {
     }
 
     @PostMapping()
-    public ResponseEntity<Object> createConversation(@Valid @RequestBody ConversationDTO conversationDTO, @RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<Object> store(@Valid @RequestBody ConversationDTO conversationDTO, @RequestHeader("Authorization") String authorization) {
         String token = authorization.replace("Bearer ", "");
 
         List<User> participants = new ArrayList<User>();
