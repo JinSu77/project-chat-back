@@ -27,8 +27,6 @@ public class ApiApplication {
 		Integer channels = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM channels", Integer.class);
 
 		if (channels == 0) {
-			System.out.println("Seeding database");
-
 			for (int i = 1; i <= 10; i++) {
 				if (i == 10) {
 					jdbcTemplate.execute("INSERT INTO channels (name) VALUES ('Channel0" + i + "')");
