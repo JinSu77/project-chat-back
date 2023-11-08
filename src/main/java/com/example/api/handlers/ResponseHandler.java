@@ -11,7 +11,15 @@ public class ResponseHandler {
     private static final String[] handledStatus = {
         HttpStatus.OK.toString(),
         HttpStatus.CREATED.toString(),
-        HttpStatus.UNPROCESSABLE_ENTITY.toString()
+        HttpStatus.UNPROCESSABLE_ENTITY.toString(),
+        HttpStatus.INTERNAL_SERVER_ERROR.toString(),
+        HttpStatus.NOT_FOUND.toString(),
+    };
+
+    private static final String[] errors = {
+        HttpStatus.UNPROCESSABLE_ENTITY.toString(),
+        HttpStatus.INTERNAL_SERVER_ERROR.toString(),
+        HttpStatus.NOT_FOUND.toString(),
     };
 
     public static ResponseEntity<Object> generateResponse(HttpStatus status, Object responseObj) {
@@ -20,7 +28,7 @@ public class ResponseHandler {
         if (Arrays.asList(handledStatus).contains(statusString)) {
             Map<String, Object> map = new HashMap<String, Object>();
 
-            if (statusString.equals(HttpStatus.UNPROCESSABLE_ENTITY.toString())) {
+            if (Arrays.asList(errors).contains(statusString)) {
                 Map<String, Object> error = new HashMap<String, Object>();
 
                 error.put("error", responseObj);
