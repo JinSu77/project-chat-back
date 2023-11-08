@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.api.models.Contact;
 import com.example.api.models.Conversation;
 import com.example.api.models.Role;
 import com.example.api.models.User;
@@ -62,6 +63,15 @@ public class UserService implements IUserService {
         user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
+        Contact contact = new Contact();
+
+        contact.setUsername(user.getUsername());
+        contact.setFirstName(user.getFirstName());
+        contact.setLastName(user.getLastName());
+        contact.setEmail(user.getEmail());
+        
+        user.setContacts(contact);
 
         Role role = roleRepository.findByName("USER");
 

@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -80,5 +81,9 @@ public class User {
 
     public void setConversations(List<Conversation> conversations) { 
         this.conversations = conversations; 
+    }
+
+    public void setContacts(Contact contact) {
+        this.contacts.add(contact);
     }
 }
