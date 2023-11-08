@@ -52,6 +52,20 @@ public class ContactController {
         return ResponseHandler.generateResponse(HttpStatus.OK, response);  
     }
 
+    @GetMapping("/random")
+    private ResponseEntity<Object> random(@RequestHeader("Authorization") String authorization)
+    {
+        String token = authorization.replace("Bearer ", "");
+
+        List<Contact> contacts = contactService.getRandomContacts(token);
+
+        Map<String, Object> response = Map.of(
+            "contacts", contacts
+        );
+
+        return ResponseHandler.generateResponse(HttpStatus.OK, response);
+    }
+
     @DeleteMapping("/{contactId}")
     private ResponseEntity<Object> delete(@PathVariable("contactId") int contactId)   
     {  

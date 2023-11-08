@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.api.handlers.ResponseHandler;
-import com.example.api.models.Contact;
 import com.example.api.models.User;
 import com.example.api.repositories.UserRepository;
 import com.example.api.services.Auth.JwtUtil;
@@ -49,15 +48,6 @@ public class AuthController {
             userService.save(userDto);
 
             User user = userRepository.findByUsername(userDto.getUsername());
-
-            // Contact contact = new Contact();
-
-            // contact.setUsername(user.getUsername());
-            // contact.setFirstName(user.getFirstName());
-            // contact.setLastName(user.getLastName());
-            // contact.setEmail(user.getEmail());
-
-            // user.setContact(contact);
 
             return ResponseHandler.generateResponse(HttpStatus.OK, "user", user);
         } catch(ResponseStatusException responseStatusException) {
