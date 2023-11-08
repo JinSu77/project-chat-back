@@ -25,7 +25,7 @@ public class ChannelController {
     @GetMapping
     public ResponseEntity<Object> index() {
         List<Channel> channels = channelService.findAllChannels();
-
+        
         Map<String, Object> response = Map.of(
             "channels", channels
         );

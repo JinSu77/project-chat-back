@@ -2,6 +2,7 @@ package com.example.api.services.Message;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,10 @@ public class MessagesService implements IMessagesService {
     @Autowired
     MessageRepository messageRepository;
 
+    public Optional<Message> findMessageById(Integer id) {
+        return messageRepository.findById(id);
+    }
+    
     public List<Message> getAllMessages() {
         List<Message> messages = new ArrayList<Message>();
         
