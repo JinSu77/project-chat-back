@@ -29,7 +29,7 @@ public class ContactController {
     ContactService contactService;
 
     @GetMapping
-    private ResponseEntity<Object> getAllContacts()
+    private ResponseEntity<Object> index()
     {
         List<Contact> contacts = contactService.getAllContacts();
 
@@ -41,7 +41,7 @@ public class ContactController {
     }
 
     @GetMapping("/{contactId}")
-    private ResponseEntity<Object> getSingleContact(@PathVariable("contactId") int contactId)   
+    private ResponseEntity<Object> show(@PathVariable("contactId") int contactId)   
     {  
         Contact contact = contactService.getContactById(contactId);
 
@@ -53,7 +53,7 @@ public class ContactController {
     }
 
     @DeleteMapping("/{contactId}")
-    private ResponseEntity<Object> deleteContact(@PathVariable("contactId") int contactId)   
+    private ResponseEntity<Object> delete(@PathVariable("contactId") int contactId)   
     {  
         try {
             contactService.delete(contactId);
@@ -65,7 +65,7 @@ public class ContactController {
     }
 
     @PostMapping
-    private ResponseEntity<Object> createContact(@Valid @RequestBody ContactDTO contactDTO, @RequestHeader("Authorization") String authorization)
+    private ResponseEntity<Object> store(@Valid @RequestBody ContactDTO contactDTO, @RequestHeader("Authorization") String authorization)
     {
         try {
             Contact contactCreated = contactService.saveContact(contactDTO);
