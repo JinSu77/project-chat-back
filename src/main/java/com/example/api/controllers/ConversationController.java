@@ -88,8 +88,18 @@ public class ConversationController {
 
             List<User> users = userService.findAllById(conversationDTO.getParticipantIds());
 
+            users.remove(authUser);
+
+            if (users.isEmpty()) {
+                return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, "You need at least 1 participant");
+            }
+
             participants.add(authUser);
             participants.addAll(users);
+
+            if (participants.size() <= 1) {
+                return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, "You need at least 2 participants");
+            }
 
             Conversation conversation = conversationDTO.toConversationWithoutParticipants();
 

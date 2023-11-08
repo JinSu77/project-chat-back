@@ -6,7 +6,6 @@ import java.util.List;
 import com.example.api.enums.ConversationType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -39,7 +38,7 @@ public class Conversation {
     @Enumerated(EnumType.STRING)
     private ConversationType type;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name="users_conversations",
         joinColumns={@JoinColumn(name="CONVERSATION_ID", referencedColumnName="ID")},
@@ -48,7 +47,7 @@ public class Conversation {
     @JsonIgnoreProperties(value = "conversations")
     private List<User> participants = new ArrayList<User>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)    
+    @OneToMany(fetch = FetchType.LAZY)    
     @JoinColumn(name = "conversation_id")
     private List<Message> messages = new ArrayList<Message>();
 

@@ -2,6 +2,7 @@ package com.example.api.controllers;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,11 +51,17 @@ public class MessageController {
     public ResponseEntity<Object> delete(@PathVariable("messageId") int messageId)
     {  
         try {
+            Optional<Message> message = messagesService.findMessageById(messageId);
+
+            if (message.isEmpty()) {
+                return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, "Message not found");
+            }
+
             messagesService.delete(messageId);  
 
             return ResponseHandler.generateResponse(HttpStatus.NO_CONTENT, null);  
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.NO_CONTENT, null);
+            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
       
     }  

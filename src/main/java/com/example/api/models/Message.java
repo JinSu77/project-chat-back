@@ -23,7 +23,10 @@ public class Message {
     @Column(nullable = true)
     private String content;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
+    private Integer channel_id;
+
+    @Column(nullable = true)
     private Integer conversation_id;
 
     @Column(nullable = false)
@@ -38,6 +41,10 @@ public class Message {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public void setChannelId(Integer channel_id) {
+        this.channel_id = channel_id;
     }
 
     public void setConversationId(Integer conversation_id) {
