@@ -2,24 +2,30 @@ package com.example.api.services.Contact;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.example.api.models.Contact;
-import com.example.api.models.User;
 import com.example.api.repositories.ContactRepository;
-import com.example.api.repositories.UserRepository;
 import com.example.api.services.Auth.JwtUtil;
 import com.example.api.validation.Contacts.ContactDTO;
 
 @Service
 public class ContactService {
     @Autowired
-    ContactRepository contactRepository;
+    private ContactRepository contactRepository;
+
+    @Autowired
     private JwtUtil jwtUtil;
-    UserRepository userRepository;
+
+    // @Autowired
+    // private UserRepository userRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     public List<Contact> getAllContacts() {
         List<Contact> contacts = new ArrayList<Contact>();
@@ -30,25 +36,20 @@ public class ContactService {
     }
 
     public List<Contact> getRandomContacts(String token) {
-
         String authenticatedUsername = jwtUtil.getAuthUsername(token);
-
-        User user = userRepository.findByUsername(authenticatedUsername);
-    
+        
         List<Contact> randomContacts = new ArrayList<>();
-        Random random = new Random();
-        int count = 5;
-    
-        List<Contact> allContacts = (List<Contact>) contactRepository.findAll();
-    
-        while (randomContacts.size() < count) {
-            int randomIndex = random.nextInt(allContacts.size());
-            Contact randomContact = allContacts.get(randomIndex);
-    
-            if (!randomContact.getUsername().equals(user.getUsername()) && !randomContacts.contains(randomContact)) {
-                randomContacts.add(randomContact);
-            }
+
+        String query = "SELECT * FROM contacts WHERE username != '" + authenticatedUsername + "' ORDER BY RAND() LIMIT 5";
+
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(query);
+
+        for (Map<String, Object> row : rows) {
+            Contact contact = contactRepository.findById((Integer) row.get("id")).get();
+
+            randomContacts.add(contact);
         }
+
         return randomContacts;
     }
 
