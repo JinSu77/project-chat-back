@@ -74,7 +74,7 @@ public class ContactController {
 
             return ResponseHandler.generateResponse(HttpStatus.NO_CONTENT, null);  
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.NO_CONTENT, null);  
+            return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, "Contact not found");
         }
     }
 
