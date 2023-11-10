@@ -1,6 +1,5 @@
 package com.example.api.controllers;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,13 +48,9 @@ public class AuthController {
 
             User user = userRepository.findByUsername(userDto.getUsername());
 
-            Map<String, Object> response = new HashMap<String, Object>();
-
-            response.put("user", user);
-
-            return ResponseHandler.generateResponse(HttpStatus.OK, response);
+            return ResponseHandler.generateResponse(HttpStatus.OK, "user", user);
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
+            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, e.getMessage());
         }
     }
 
@@ -66,23 +61,25 @@ public class AuthController {
 
             String token = jwtUtil.createToken(user);
 
-            Map<String, Object> response = new HashMap<String, Object>();
+ 
 
-            response.put("token", token);
-            response.put("message", "logged in successfully");
+            Map<String, Object> response = Map.of(
+                "token", token,
+                "message", "logged in successfully"
+            );
 
-            return ResponseHandler.generateResponse(HttpStatus.OK, response);
+            return ResponseHandler.generateResponse(HttpStatus.OK, null, response);
         } catch (BadCredentialsException e){
-            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, "Wrong credentials");
+            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, "Wrong credentials");
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
+            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, e.getMessage());
         }
     }
 
     @GetMapping(value = "/me")
     public @ResponseBody ResponseEntity<Object> me(@Nullable @RequestHeader("Authorization") String authorization) {
         if (authorization == null) {
-            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, "Authorization header is missing");
+            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, "Authorization header is missing");
         }
 
         String token = authorization.replace("Bearer ", "");
@@ -90,13 +87,9 @@ public class AuthController {
         try {
             User user = jwtUtil.getAuthUser(token);
 
-            Map<String, Object> response = new HashMap<String, Object>();
-
-            response.put("user", user);
-
-            return ResponseHandler.generateResponse(HttpStatus.OK, response);
+            return ResponseHandler.generateResponse(HttpStatus.OK, "user", user);
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
+            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, e.getMessage());
         }
     }
 }

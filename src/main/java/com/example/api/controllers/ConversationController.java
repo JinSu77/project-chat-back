@@ -2,7 +2,6 @@ package com.example.api.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,11 +45,7 @@ public class ConversationController {
 
         List<Conversation> conversations = userService.findAllConversationsFromUser(userId);
 
-        Map<String, Object> response = Map.of(
-            "conversations", conversations
-        );
-
-        return ResponseHandler.generateResponse(HttpStatus.OK, response);
+        return ResponseHandler.generateResponse(HttpStatus.OK, "conversations", conversations);
     }
 
     @GetMapping("/{conversationId}")
@@ -64,16 +59,12 @@ public class ConversationController {
             Optional<Conversation> conversation = conversationService.findUserConversationById(user, conversationId);
 
             if (conversation.isEmpty()) {
-                return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null);
+                return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null, "Conversation not found");
             }
 
-            Map<String, Object> response = Map.of(
-                "conversation", conversation
-            );
-
-            return ResponseHandler.generateResponse(HttpStatus.OK, response);
+            return ResponseHandler.generateResponse(HttpStatus.OK, "conversation", conversation);
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
+            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, e.getMessage());
         }
     }
 
@@ -91,14 +82,14 @@ public class ConversationController {
             users.remove(authUser);
 
             if (users.isEmpty()) {
-                return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, "You need at least 1 participant");
+                return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, "You need at least 1 participant");
             }
 
             participants.add(authUser);
             participants.addAll(users);
 
             if (participants.size() <= 1) {
-                return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, "You need at least 2 participants");
+                return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, "You need at least 2 participants");
             }
 
             Conversation conversation = conversationDTO.toConversationWithoutParticipants();
@@ -107,13 +98,9 @@ public class ConversationController {
 
             conversationService.save(conversation);
 
-            Map<String, Object> response = Map.of(
-                "conversation", conversation
-            );
-
-            return ResponseHandler.generateResponse(HttpStatus.OK, response);
+            return ResponseHandler.generateResponse(HttpStatus.OK, "conversation", conversation);
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
+            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, e.getMessage());
         }
     }
 }

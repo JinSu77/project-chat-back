@@ -1,6 +1,5 @@
 package com.example.api.controllers;
 
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +44,7 @@ public class ChannelMessageController {
             Optional<Channel> channel = channelService.findChannelById(channelId);
 
             if (channel.isEmpty()) {
-                return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, "Channel not found");
+                return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null, "Channel not found");
             }
 
             Integer userId = jwtUtil.getAuthUserId(authorization);
@@ -56,13 +55,9 @@ public class ChannelMessageController {
 
             channelService.updateMessageRelationship(channel.get(), message);
 
-            Map<String, Object> response = Map.of(
-                "message", message
-            );
-
-            return ResponseHandler.generateResponse(HttpStatus.CREATED, response);
+            return ResponseHandler.generateResponse(HttpStatus.CREATED, "message", message);
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
+            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, e.getMessage());
         }
     }
 }

@@ -22,26 +22,39 @@ public class ResponseHandler {
         HttpStatus.NOT_FOUND.toString(),
     };
 
-    public static ResponseEntity<Object> generateResponse(HttpStatus status, Object responseObj) {
-        String statusString = status.toString();
+    public static ResponseEntity<Object> generateResponse(HttpStatus httpStatus, String resourceName, Object responseObj) {
+        String status = httpStatus.toString();
 
-        if (Arrays.asList(handledStatus).contains(statusString)) {
-            Map<String, Object> map = new HashMap<String, Object>();
-
-            if (Arrays.asList(errors).contains(statusString)) {
-                Map<String, Object> error = new HashMap<String, Object>();
-
-                error.put("error", responseObj);
-
-                map.put("data", error);
-            } else {
-                map.put("data", responseObj);
-            }
-
-
-            return new ResponseEntity<Object>(map,status);
+        if (! Arrays.asList(handledStatus).contains(status)) {
+            return new ResponseEntity<Object>(httpStatus);
         }
 
-        return new ResponseEntity<Object>(status);
+        Map<String, Object> response = new HashMap<String, Object>();
+
+        if (Arrays.asList(errors).contains(status)) {
+            return errorResponse(httpStatus, responseObj, response);
+        }
+
+        if (resourceName == null) {
+            return successResponse(httpStatus, responseObj, response);
+        }
+
+        return successResponse(
+            httpStatus, 
+            Map.of(resourceName, responseObj), 
+            response
+        );
+    }
+
+    private static ResponseEntity<Object> successResponse(HttpStatus httpStatus, Object responseObj, Map<String, Object> response) {
+        return new ResponseEntity<Object>(Map.of("data", responseObj), httpStatus);
+    }
+
+    private static ResponseEntity<Object> errorResponse(HttpStatus httpStatus, Object responseObj, Map<String, Object> response) {
+        Map<String, Object> error = Map.of("error", responseObj);
+
+        response.put("data", error);
+
+        return new ResponseEntity<Object>(response, httpStatus);
     }
 }

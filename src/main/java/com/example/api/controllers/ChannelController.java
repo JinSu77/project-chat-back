@@ -1,7 +1,6 @@
 package com.example.api.controllers;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +25,7 @@ public class ChannelController {
     public ResponseEntity<Object> index() {
         List<Channel> channels = channelService.findAllChannels();
         
-        Map<String, Object> response = Map.of(
-            "channels", channels
-        );
-
-        return ResponseHandler.generateResponse(HttpStatus.OK, response);
+        return ResponseHandler.generateResponse(HttpStatus.OK, "channels", channels);
     }
     
     @GetMapping("/{channelId}")
@@ -38,13 +33,9 @@ public class ChannelController {
         Optional<Channel> channel = channelService.findChannelById(channelId);
 
         if (channel.isEmpty()) {
-            return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null);
+            return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null, "Channel not found");
         }
 
-        Map<String, Object> response = Map.of(
-            "channel", channel.get()
-        );
-
-        return ResponseHandler.generateResponse(HttpStatus.OK, response);
+        return ResponseHandler.generateResponse(HttpStatus.OK, "channel", channel.get());
     }
 }

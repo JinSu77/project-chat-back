@@ -1,7 +1,5 @@
 package com.example.api.controllers;
 
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,14 +39,10 @@ public class ConversationMessageController {
             Message message = messageDTO.toMessage(conversationId, userId, null);
 
             messagesService.save(message);
-
-            Map<String, Object> response = Map.of(
-                "message", message
-            );
         
-            return ResponseHandler.generateResponse(HttpStatus.OK, response);
+            return ResponseHandler.generateResponse(HttpStatus.OK, "message", message);
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
+            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, e.getMessage());
         }
     }
 }

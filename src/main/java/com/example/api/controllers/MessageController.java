@@ -1,7 +1,6 @@
 package com.example.api.controllers;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +27,7 @@ public class MessageController {
     {
         List<Message> messages = messagesService.getAllMessages();
 
-        Map<String, Object> response = Map.of(
-            "messages", messages
-        );
-
-        return ResponseHandler.generateResponse(HttpStatus.OK, response);
+        return ResponseHandler.generateResponse(HttpStatus.OK, "messages", messages);
     }
 
     @GetMapping("/{messageId}")
@@ -40,11 +35,7 @@ public class MessageController {
     {  
         Message message = messagesService.getMessageById(messageId);
 
-        Map<String, Object> response = Map.of(
-            "message", message
-        );
-
-        return ResponseHandler.generateResponse(HttpStatus.OK, response);  
+        return ResponseHandler.generateResponse(HttpStatus.OK, "message", message);
     }  
 
     @DeleteMapping("/{messageId}")  
@@ -54,14 +45,14 @@ public class MessageController {
             Optional<Message> message = messagesService.findMessageById(messageId);
 
             if (message.isEmpty()) {
-                return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, "Message not found");
+                return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null, "Message not found");
             }
 
             messagesService.delete(messageId);  
 
-            return ResponseHandler.generateResponse(HttpStatus.NO_CONTENT, null);  
+            return ResponseHandler.generateResponse(HttpStatus.NO_CONTENT, null, null);
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }
       
     }  
