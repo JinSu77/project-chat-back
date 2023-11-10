@@ -1,7 +1,5 @@
 package com.example.api.controllers;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +26,7 @@ public class UserController {
     public @ResponseBody ResponseEntity<Object> index() {
         Iterable<User> users = userRepository.findAll();
 
-        Map<String, Object> response = new HashMap<>();
-
-        response.put("users", users);
-
-        return ResponseHandler.generateResponse(HttpStatus.OK, response);
+        return ResponseHandler.generateResponse(HttpStatus.OK, "users", users);
     }
 
     @GetMapping("/{userId}")
@@ -40,13 +34,9 @@ public class UserController {
         Optional<User> user = userRepository.findById(userId);
 
         if (user.isEmpty()) {
-            return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null);
+            return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null, null);
         }
 
-        Map<String, Object> response = new HashMap<>();
-
-        response.put("user", user);
-
-        return ResponseHandler.generateResponse(HttpStatus.OK, response);
+        return ResponseHandler.generateResponse(HttpStatus.OK, "user", user);
     }
 }
