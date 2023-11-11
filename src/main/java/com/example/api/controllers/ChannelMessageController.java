@@ -50,7 +50,7 @@ public class ChannelMessageController {
 
             Integer userId = jwtUtil.getAuthUserId(authorization);
 
-            Message message = messageDTO.toMessage(null, userId, channelId);
+            Message message = messageDTO.toMessage(null, userId, channel.get());
 
             messagesService.save(message);
 

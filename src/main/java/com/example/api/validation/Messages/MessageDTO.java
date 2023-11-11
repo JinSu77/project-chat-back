@@ -3,6 +3,7 @@ package com.example.api.validation.Messages;
 import java.util.Date;
 import org.hibernate.validator.constraints.Range;
 
+import com.example.api.models.Channel;
 import com.example.api.models.Message;
 
 import jakarta.annotation.Nullable;
@@ -22,13 +23,15 @@ public class MessageDTO {
     public Message toMessage(
         @Nullable Integer conversation_id, 
         Integer user_id,
-        @Nullable Integer channel_id
+        @Nullable Channel channel
     ) {
         Message message = new Message();
 
         message.setContent(this.content);
 
-        if (channel_id != null) message.setChannelId(channel_id);
+        if (channel != null) {
+            message.setChannel(channel);
+        }
 
         if (conversation_id != null) message.setConversationId(conversation_id);
         
