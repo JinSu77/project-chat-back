@@ -3,6 +3,9 @@ package com.example.api.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -46,6 +49,7 @@ public class User {
     private String email;
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(
         name="users_roles",
         joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
