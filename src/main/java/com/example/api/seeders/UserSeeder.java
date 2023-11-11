@@ -71,10 +71,12 @@ public class UserSeeder {
         List<Integer> userIds = jdbc.queryForList("SELECT id FROM users WHERE email in ('" + String.join("', '", emails) + "')", Integer.class);
 
         ChannelMessageSeeder.seed(jdbc, userIds);
-        
-        // TODO: createConversation();
 
-        // TODO: createMessage('channel' ?? 'conversation');
+        if (userIds.size() >= 2) {
+            UserConversationSeeder.seed(jdbc, userIds, usernames);
+        }
+
+        // TODO: ConversationMessageSeeder.seed(jdbc, userIds);
         // use this : List<Integer> userIdsExcludingThisUserId = userIds.stream().filter(id -> id != userId).toList();
     }
 
