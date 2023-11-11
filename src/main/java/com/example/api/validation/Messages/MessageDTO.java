@@ -1,6 +1,5 @@
 package com.example.api.validation.Messages;
 
-import java.util.Date;
 import org.hibernate.validator.constraints.Range;
 
 import com.example.api.models.Channel;
@@ -36,8 +35,6 @@ public class MessageDTO {
         if (conversation_id != null) message.setConversationId(conversation_id);
         
         message.setUserId(user_id);
-
-        message.setCreatedAt(new Date());
 
         return message;
     }

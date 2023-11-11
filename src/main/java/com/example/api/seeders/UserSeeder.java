@@ -1,40 +1,19 @@
 package com.example.api.seeders;
 
+import java.util.List;
+import java.util.Locale;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.github.javafaker.Faker;
+
 public class UserSeeder {
     private static JdbcTemplate jdbc;
     private static PasswordEncoder passwordEncoder;
-
-    private static final String INSERT_USER_QUERY =
-    "INSERT INTO users (email, first_name, last_name, password, username) VALUES " +
-    "('jean.dupont@example.com', 'Jean', 'Dupont', 'password', 'jeandupont')," +
-    "('alice.martin@example.com', 'Alice', 'Martin', 'password', 'alicemartin')," +
-    "('pierre.leroux@example.com', 'Pierre', 'Leroux', 'password', 'pierreleroux')," +
-    "('emilie.blanc@example.com', 'Émilie', 'Blanc', 'password', 'emilieblanc')," +
-    "('michel.bernard@example.com', 'Michel', 'Bernard', 'password', 'michelbernard')," +
-    "('sophie.dubois@example.com', 'Sophie', 'Dubois', 'password', 'sophiedubois')," +
-    "('antoine.petit@example.com', 'Antoine', 'Petit', 'password', 'antoinepetit')," +
-    "('isabelle.marchand@example.com', 'Isabelle', 'Lefèvre', 'password', 'isabellemarchand')," +
-    "('thomas.robert@example.com', 'Thomas', 'Robert', 'password', 'thomasrobert')," +
-    "('lucie.girard@example.com', 'Lucie', 'Girard', 'password', 'luciegirard')";
-
-    private static final String[] USER_EMAILS = {
-        "jean.dupont@example.com",
-        "alice.martin@example.com",
-        "pierre.leroux@example.com",
-        "emilie.blanc@example.com",
-        "michel.bernard@example.com",
-        "sophie.dubois@example.com",
-        "antoine.petit@example.com",
-        "isabelle.marchand@example.com",
-        "thomas.robert@example.com",
-        "lucie.girard@example.com"
-    };
-
     private static final String USER_PASSWORD = "password";
+    private static Integer NUMBER_OF_USERS = 10;
     
     public static void seed(JdbcTemplate jdbcTemplate) {
         Integer usersCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM users", Integer.class);
@@ -43,33 +22,60 @@ public class UserSeeder {
 
         if (usersCount != 0) return;
 
-        System.out.println("Seeding users...");
-
+        Faker faker = new Faker(Locale.FRANCE);
         jdbc = jdbcTemplate;
-
         passwordEncoder = new BCryptPasswordEncoder();
 
-        jdbc.execute(INSERT_USER_QUERY);
-
-        usersCount = jdbc.queryForObject("SELECT COUNT(*) FROM users", Integer.class);
+        System.out.println("Seeding users...");
 
         Integer roleId = getUserRoleId();
+        String[] emails = new String[NUMBER_OF_USERS];
+        String[] usernames = new String[NUMBER_OF_USERS];
 
-        for(int i = 0; i < usersCount; i++) {
-            updateUserPassword(USER_EMAILS[i]);
+        for (int i = 0; i < NUMBER_OF_USERS; i++) {
+            String email = faker.internet().emailAddress();
+            String username = faker.name().username();
 
-            addUserRole(USER_EMAILS[i], roleId);
+            for (int j = 0; j < emails.length; j++) {
+                if (emails[j] == email) {
+                    email = faker.internet().emailAddress();
+                }
+            }
 
-            // TODO: addChannel(USER_EMAILS[i]);
+            for (int j = 0; j < usernames.length; j++) {
+                if (usernames[j] == username) {
+                    username = faker.name().username();
+                }
+            }
+
+            emails[i] = email;
+            usernames[i] = username;
+
+            jdbc.execute("INSERT INTO users (email, first_name, last_name, password, username) VALUES" 
+                + "('" + email
+                + "', '"
+                + faker.name().firstName() 
+                + "', '" 
+                + faker.name().lastName() 
+                + "', '" 
+                + passwordEncoder.encode(USER_PASSWORD) 
+                + "', '" 
+                +  username
+                + "')"
+            );
+
+            addUserRole(email, roleId);
+            // TODO: addUserContact();
         }
-    }
+        
+        List<Integer> userIds = jdbc.queryForList("SELECT id FROM users WHERE email in ('" + String.join("', '", emails) + "')", Integer.class);
 
-    private static void updateUserPassword(String userEmail) {
-        jdbc.update(
-            "UPDATE users SET password = ? WHERE email = ?",
-            passwordEncoder.encode(USER_PASSWORD),
-            userEmail
-        );
+        ChannelMessageSeeder.seed(jdbc, userIds);
+        
+        // TODO: createConversation();
+
+        // TODO: createMessage('channel' ?? 'conversation');
+        // use this : List<Integer> userIdsExcludingThisUserId = userIds.stream().filter(id -> id != userId).toList();
     }
 
     private static Integer getUserRoleId() {
