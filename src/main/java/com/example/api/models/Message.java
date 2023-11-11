@@ -2,6 +2,7 @@ package com.example.api.models;
 
 import java.util.Date;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -37,6 +38,7 @@ public class Message {
 
     @Column(nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @CreationTimestamp
     private Date created_at;
 
     @Column(nullable = true)
