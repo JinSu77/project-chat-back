@@ -6,6 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.api.seeders.ChannelSeeder;
+import com.example.api.seeders.UserSeeder;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @SpringBootApplication
@@ -14,27 +18,18 @@ public class ApiApplication {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
+	private final String environment = "development"; // TODO: create a config file
+
 	public static void main(String[] args) {
 		SpringApplication.run(ApiApplication.class, args);
 	}
 
 	@EventListener(ContextRefreshedEvent.class)
-	public void seed(ContextRefreshedEvent event) {		
-		seedChannels();
-	}
+	public void seed(ContextRefreshedEvent event) {	
+		if (! environment.equals("development")) return;
 
-	private void seedChannels() {
-		Integer channels = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM channels", Integer.class);
+		ChannelSeeder.seed(jdbcTemplate);
 
-		if (channels == 0) {
-			for (int i = 1; i <= 10; i++) {
-				if (i == 10) {
-					jdbcTemplate.execute("INSERT INTO channels (name) VALUES ('Channel0" + i + "')");
-					return;
-				}
-
-				jdbcTemplate.execute("INSERT INTO channels (name) VALUES ('Channel00" + i + "')");
-			}
-		}
+		UserSeeder.seed(jdbcTemplate);		
 	}
 }
