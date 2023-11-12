@@ -23,7 +23,17 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.disable())
+        http
+            .cors(cors -> cors.configurationSource(
+                request -> {
+                    var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
+                    corsConfiguration.setAllowCredentials(true);
+                    corsConfiguration.addAllowedOrigin("*");
+                    corsConfiguration.addAllowedHeader("*");
+                    corsConfiguration.addAllowedMethod("*");
+                    return corsConfiguration;
+                }
+            ))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authorizeRequests -> 
                 authorizeRequests
@@ -32,12 +42,11 @@ public class SecurityConfig {
                     ).permitAll()
                     .anyRequest()
                     .authenticated()
-                )
+            )
             .sessionManagement(
                 sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
-            
 
         return http.build();
     }
