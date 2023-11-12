@@ -1,4 +1,4 @@
-package com.example.api.seeders;
+package com.example.api.seeders.User;
 
 import java.util.List;
 import java.util.Locale;
@@ -7,18 +7,18 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.example.api.seeders.Channel.ChannelMessageSeeder;
+import com.example.api.seeders.Conversation.ConversationMessageSeeder;
 import com.github.javafaker.Faker;
 
 public class UserSeeder {
     private static JdbcTemplate jdbc;
     private static PasswordEncoder passwordEncoder;
     private static final String USER_PASSWORD = "password";
-    private static Integer NUMBER_OF_USERS = 10;
+    private static final Integer NUMBER_OF_USERS = 10;
     
     public static void seed(JdbcTemplate jdbcTemplate) {
         Integer usersCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM users", Integer.class);
-
-        System.out.println("usersCount: " + usersCount);
 
         if (usersCount != 0) return;
 
@@ -36,13 +36,11 @@ public class UserSeeder {
             String email = faker.internet().emailAddress();
             String username = faker.name().username();
 
-            for (int j = 0; j < emails.length; j++) {
+            for (int j = 0; j < NUMBER_OF_USERS; j++) {
                 if (emails[j] == email) {
                     email = faker.internet().emailAddress();
                 }
-            }
 
-            for (int j = 0; j < usernames.length; j++) {
                 if (usernames[j] == username) {
                     username = faker.name().username();
                 }
@@ -65,7 +63,10 @@ public class UserSeeder {
             );
 
             addUserRole(email, roleId);
-            // TODO: addUserContact();
+
+            // TODO: Créer un seeder UserContact 
+            // Integer userId = jdbc.queryForObject("SELECT id FROM users WHERE email = '" + email + "'", Integer.class);
+            // UserContactSeeder.seed(jdbc, userId);
         }
         
         List<Integer> userIds = jdbc.queryForList("SELECT id FROM users WHERE email in ('" + String.join("', '", emails) + "')", Integer.class);
@@ -73,11 +74,12 @@ public class UserSeeder {
         ChannelMessageSeeder.seed(jdbc, userIds);
 
         if (userIds.size() >= 2) {
-            UserConversationSeeder.seed(jdbc, userIds, usernames);
-        }
+            Integer[] conversationIds = UserConversationSeeder.seed(jdbc, userIds, usernames);
 
-        // TODO: ConversationMessageSeeder.seed(jdbc, userIds);
-        // use this : List<Integer> userIdsExcludingThisUserId = userIds.stream().filter(id -> id != userId).toList();
+            for (Integer conversationId : conversationIds) {
+                ConversationMessageSeeder.seed(jdbc, conversationId);
+            }            
+        }
     }
 
     private static Integer getUserRoleId() {

@@ -7,8 +7,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.api.seeders.ChannelSeeder;
-import com.example.api.seeders.UserSeeder;
+import com.example.api.seeders.Channel.ChannelSeeder;
+import com.example.api.seeders.User.UserSeeder;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
