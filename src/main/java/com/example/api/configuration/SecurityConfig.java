@@ -1,5 +1,7 @@
 package com.example.api.configuration;
 
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,7 +30,9 @@ public class SecurityConfig {
                 request -> {
                     var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
                     corsConfiguration.setAllowCredentials(true);
-                    corsConfiguration.addAllowedOrigin("*");
+                    corsConfiguration.setAllowedOrigins(
+                        Arrays.asList("http://localhost:3000") // TODO: use env variable
+                    );
                     corsConfiguration.addAllowedHeader("*");
                     corsConfiguration.addAllowedMethod("*");
                     return corsConfiguration;
