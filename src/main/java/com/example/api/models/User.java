@@ -58,6 +58,7 @@ public class User {
     private List<Role> roles = new ArrayList<Role>();
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(
         name="users_conversations",
         joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},

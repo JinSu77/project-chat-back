@@ -1,4 +1,4 @@
-package com.example.api.seeders;
+package com.example.api.seeders.Channel;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -17,6 +17,8 @@ public class ChannelMessageSeeder {
         Integer channelCounts = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM channels", Integer.class);
 
         if (channelCounts == 0) return;
+
+        System.out.println("Seeding channel messages...");
 
         Faker faker = new Faker(Locale.FRANCE);
         jdbc = jdbcTemplate;
