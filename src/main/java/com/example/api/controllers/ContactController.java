@@ -1,7 +1,6 @@
 package com.example.api.controllers;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,11 +32,7 @@ public class ContactController {
     {
         List<Contact> contacts = contactService.getAllContacts();
 
-        Map<String, Object> response = Map.of(
-            "contacts", contacts
-        );
-
-        return ResponseHandler.generateResponse(HttpStatus.OK, response);
+        return ResponseHandler.generateResponse(HttpStatus.OK, "contacts", contacts);
     }
 
     @GetMapping("/{contactId}")
@@ -45,11 +40,7 @@ public class ContactController {
     {  
         Contact contact = contactService.getContactById(contactId);
 
-        Map<String, Object> response = Map.of(
-            "contact", contact
-        );
-
-        return ResponseHandler.generateResponse(HttpStatus.OK, response);  
+        return ResponseHandler.generateResponse(HttpStatus.OK, "contact", contact);
     }
 
     @GetMapping("/random")
@@ -59,11 +50,7 @@ public class ContactController {
 
         List<Contact> contacts = contactService.getRandomContacts(token);
 
-        Map<String, Object> response = Map.of(
-            "contacts", contacts
-        );
-
-        return ResponseHandler.generateResponse(HttpStatus.OK, response);
+        return ResponseHandler.generateResponse(HttpStatus.OK, "contacts", contacts);
     }
 
     @DeleteMapping("/{contactId}")
@@ -72,9 +59,9 @@ public class ContactController {
         try {
             contactService.delete(contactId);
 
-            return ResponseHandler.generateResponse(HttpStatus.NO_CONTENT, null);  
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, "Contact not found");
+            return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null, "Contact not found");
         }
     }
 
@@ -86,14 +73,10 @@ public class ContactController {
 
             Contact contact = contactService.getContactById(contactCreated.getId());
 
-            Map<String, Object> response = Map.of(
-                "contact", contact
-            );
-
-            return ResponseHandler.generateResponse(HttpStatus.CREATED, response);
+            return ResponseHandler.generateResponse(HttpStatus.CREATED, "contact", contact);
 
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, null);
+            return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, null, e.getMessage());
         }
     }
 
