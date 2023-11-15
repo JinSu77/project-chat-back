@@ -61,11 +61,10 @@ public class AuthController {
 
             String token = jwtUtil.createToken(user);
 
- 
-
             Map<String, Object> response = Map.of(
+                "message", "logged in successfully",
                 "token", token,
-                "message", "logged in successfully"
+                "user", user
             );
 
             return ResponseHandler.generateResponse(HttpStatus.OK, null, response);
@@ -78,10 +77,6 @@ public class AuthController {
 
     @GetMapping(value = "/me")
     public @ResponseBody ResponseEntity<Object> me(@Nullable @RequestHeader("Authorization") String authorization) {
-        if (authorization == null) {
-            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, "Authorization header is missing");
-        }
-
         String token = authorization.replace("Bearer ", "");
 
         try {
