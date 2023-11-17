@@ -13,6 +13,12 @@ public class UserConversationSeeder {
         jdbc = jdbcTemplate;
         Integer firstParticipantUserId = userIds.get(0);
         String firstParticipantUsername = jdbc.queryForObject("SELECT username FROM users WHERE id = " + firstParticipantUserId, String.class);
+
+        System.out.println("####################################################################");
+        System.out.println("###### Use this user to test the application");
+        System.out.println("###### Username: " + firstParticipantUsername);
+        System.out.println("####################################################################");
+
         String[] filteredUsernames = removeUsername(firstParticipantUsername, usernames);
         Integer[] conversationIds = new Integer[filteredUsernames.length];
 
@@ -34,6 +40,7 @@ public class UserConversationSeeder {
 
         return conversationIds;
     }
+    
 
     private static String[] removeUsername(String username, String[] usernames) {
         String[] filteredUsernames = new String[usernames.length - 1];

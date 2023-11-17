@@ -14,8 +14,6 @@ public class ConversationMessageSeeder {
         private static final Integer NUMBER_OF_MESSAGES = 5;
 
     public static void seed(JdbcTemplate jdbcTemplate, Integer conversationId) {
-        System.out.println("Seeding conversation messages...");
-        
         jdbc = jdbcTemplate;
         Faker faker = new Faker();
         Random random = new Random();

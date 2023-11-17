@@ -75,6 +75,8 @@ public class UserSeeder {
 
         if (userIds.size() >= 2) {
             Integer[] conversationIds = UserConversationSeeder.seed(jdbc, userIds, usernames);
+            
+            System.out.println("Seeding conversation messages...");
 
             for (Integer conversationId : conversationIds) {
                 ConversationMessageSeeder.seed(jdbc, conversationId);
