@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.api.handlers.ResponseHandler;
 import com.example.api.models.User;
@@ -49,8 +50,10 @@ public class AuthController {
             User user = userRepository.findByUsername(userDto.getUsername());
 
             return ResponseHandler.generateResponse(HttpStatus.OK, "user", user);
+        } catch(ResponseStatusException responseStatusException) {
+            return ResponseHandler.generateResponse(responseStatusException, null, responseStatusException.getMessage());
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, e.getMessage());
+            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }
     }
 
@@ -68,10 +71,12 @@ public class AuthController {
             );
 
             return ResponseHandler.generateResponse(HttpStatus.OK, null, response);
+        } catch(ResponseStatusException responseStatusException) {
+            return ResponseHandler.generateResponse(responseStatusException, null, responseStatusException.getMessage());
         } catch (BadCredentialsException e){
             return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, "Wrong credentials");
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, e.getMessage());
+            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }
     }
 
@@ -84,7 +89,7 @@ public class AuthController {
 
             return ResponseHandler.generateResponse(HttpStatus.OK, "user", user);
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, e.getMessage());
+            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }
     }
 }

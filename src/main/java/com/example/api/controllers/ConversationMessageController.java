@@ -42,7 +42,7 @@ public class ConversationMessageController {
         
             return ResponseHandler.generateResponse(HttpStatus.OK, "message", message);
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, e.getMessage());
+            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }
     }
 }

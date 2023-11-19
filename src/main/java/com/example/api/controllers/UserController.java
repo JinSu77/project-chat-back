@@ -32,9 +32,10 @@ public class UserController {
     @GetMapping("/{userId}")
     public @ResponseBody ResponseEntity<Object> show(@PathVariable Integer userId) {
         Optional<User> user = userRepository.findById(userId);
+        
 
         if (user.isEmpty()) {
-            return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null, null);
+            return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null, "User not found");
         }
 
         return ResponseHandler.generateResponse(HttpStatus.OK, "user", user);

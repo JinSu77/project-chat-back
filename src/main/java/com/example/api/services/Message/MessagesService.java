@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.api.models.Message;
 import com.example.api.repositories.MessageRepository;
@@ -29,14 +31,24 @@ public class MessagesService implements IMessagesService {
 
     public Message getMessageById(Integer id)   
     {
-        return messageRepository.findById(id).get();
+        Optional<Message> message = messageRepository.findById(id);
+
+        if (message.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found");    
+        }
+
+        return message.get();
     }
 
     public void delete(Integer id)   
     {  
-        Message message = messageRepository.findById(id).get();
+        Optional<Message> message = messageRepository.findById(id);
 
-        messageRepository.delete(message);
+        if (message.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found");    
+        }
+
+        messageRepository.delete(message.get());
     }  
 
     public void save(Message message) {

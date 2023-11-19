@@ -44,7 +44,7 @@ public class UserConversationController {
 
             return ResponseHandler.generateResponse(HttpStatus.OK, "conversations", conversations);
         } catch (ResponseStatusException responseStatusException) {
-            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, responseStatusException.getMessage());
+            return ResponseHandler.generateResponse(responseStatusException, null, responseStatusException.getMessage());
         } catch (Exception e) {
             return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }
