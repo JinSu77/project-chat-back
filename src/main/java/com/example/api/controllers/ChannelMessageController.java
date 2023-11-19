@@ -57,7 +57,7 @@ public class ChannelMessageController {
 
             return ResponseHandler.generateResponse(HttpStatus.CREATED, "message", message);
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, e.getMessage());
+            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }
     }
 }

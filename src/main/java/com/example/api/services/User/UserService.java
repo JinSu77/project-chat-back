@@ -1,7 +1,9 @@
 package com.example.api.services.User;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.api.models.Conversation;
 import com.example.api.models.Role;
@@ -13,6 +15,7 @@ import com.example.api.validation.Users.UserDto;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,11 +35,11 @@ public class UserService implements IUserService {
         User user = userRepository.findByUsername(userLoginDTO.getUsername());
 
         if (user == null) {
-            throw new RuntimeException(String.format("Username %s not found", userLoginDTO.getUsername()));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Username %s not found", userLoginDTO.getUsername()));
         }
         
         if (! passwordEncoder.matches(userLoginDTO.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid password");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid password");
         }
 
         return user;
@@ -45,11 +48,11 @@ public class UserService implements IUserService {
     @Override
     public void save(UserDto userDto) {
         if (userRepository.findByUsername(userDto.getUsername()) != null) {
-            throw new RuntimeException(String.format("Username %s already exist", userDto.getUsername()));
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, String.format("Username %s already exist", userDto.getUsername()));
         }
 
         if (userRepository.findByEmail(userDto.getEmail()) != null) {
-            throw new RuntimeException(String.format("Email %s already exist", userDto.getEmail()));
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, String.format("Email %s already exist", userDto.getEmail()));
         }
 
         User user = new User();
@@ -108,8 +111,12 @@ public class UserService implements IUserService {
 
     @Override
     public List<Conversation> findAllConversationsFromUser(Integer userId) {
-        User user = userRepository.findById(userId).get();
+        Optional<User> user = userRepository.findById(userId);
 
-        return user.getConversations();
+        if (user.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        return user.get().getConversations();
     }
 }
