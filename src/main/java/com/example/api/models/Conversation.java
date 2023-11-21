@@ -22,7 +22,6 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Entity
@@ -32,10 +31,6 @@ public class Conversation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id; 
-
-    @Column(nullable = true)
-    @Size(min = 5, max = 50, message = "Name must be between 5 and 50 characters")
-    private String name;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -65,10 +60,6 @@ public class Conversation {
 
     public void setMessages(List<Message> messages) {
         this.messages = messages;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void setParticipants(List<User> participants) {

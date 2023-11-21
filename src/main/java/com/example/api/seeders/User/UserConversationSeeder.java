@@ -19,22 +19,19 @@ public class UserConversationSeeder {
         System.out.println("###### Username: " + firstParticipantUsername);
         System.out.println("####################################################################");
 
-        String[] filteredUsernames = removeUsername(firstParticipantUsername, usernames);
+        String[] filteredUsernames = removeStringFromStringArray(firstParticipantUsername, usernames);
         Integer[] conversationIds = new Integer[filteredUsernames.length];
 
         for (int j = 0; j < userIds.size() - 1; j++) {
             String secondParticipantUsername = filteredUsernames[j];
             Integer secondParticipantUserId = jdbc.queryForObject("SELECT id FROM users WHERE username = '" + secondParticipantUsername + "'", Integer.class);
-            String conversationName = firstParticipantUsername + " et " + secondParticipantUsername;
 
-            jdbc.execute("INSERT INTO conversations (name, type) VALUES ('" + conversationName + "', 'PRIVATE')");
+            jdbc.execute("INSERT INTO conversations (type) VALUES ('PRIVATE')");
 
-            Integer conversationId = jdbc.queryForObject("SELECT id FROM conversations WHERE name = '" + conversationName + "'", Integer.class);
-
+            Integer conversationId = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
             conversationIds[j] = conversationId;
 
             jdbc.execute("INSERT INTO users_conversations (user_id, conversation_id) VALUES (" + firstParticipantUserId + ", " + conversationId + ")");
-            
             jdbc.execute("INSERT INTO users_conversations (user_id, conversation_id) VALUES (" + secondParticipantUserId + ", " + conversationId + ")");
         }
 
@@ -42,7 +39,7 @@ public class UserConversationSeeder {
     }
     
 
-    private static String[] removeUsername(String username, String[] usernames) {
+    private static String[] removeStringFromStringArray(String username, String[] usernames) {
         String[] filteredUsernames = new String[usernames.length - 1];
         int indexToRemove = -1;
 
