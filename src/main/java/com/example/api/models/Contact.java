@@ -28,6 +28,9 @@ public class Contact {
     @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
+    private Integer user_id;
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -42,5 +45,9 @@ public class Contact {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setUserId(Integer user_id) {
+        this.user_id = user_id;
     }
 }
