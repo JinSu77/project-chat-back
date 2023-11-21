@@ -73,7 +73,7 @@ public class User {
             name="users_contacts",
             joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
             inverseJoinColumns={@JoinColumn(name="CONTACT_ID", referencedColumnName="ID")})
-    private List<Contact> contacts = new ArrayList<>();
+    private List<Contact> contacts = new ArrayList<Contact>();
 
     public List<Conversation> conversations() { 
         return conversations; 

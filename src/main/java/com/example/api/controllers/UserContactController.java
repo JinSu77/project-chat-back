@@ -34,7 +34,7 @@ public class UserContactController {
 
             return ResponseHandler.generateResponse(HttpStatus.OK, "contact added", contact);
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, e.getMessage());
+            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }
     }
 }
