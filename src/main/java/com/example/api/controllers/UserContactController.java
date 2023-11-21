@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.api.handlers.ResponseHandler;
+import com.example.api.models.Contact;
 import com.example.api.services.Contact.ContactService;
 import com.example.api.services.User.UserService;
 
@@ -29,9 +30,11 @@ public class UserContactController {
         try {
             userService.addContactList(userId, contactId);
 
-            return ResponseHandler.generateResponse(HttpStatus.OK, "Contact added to your list");
+            Contact contact = contactService.getContactById(contactId);
+
+            return ResponseHandler.generateResponse(HttpStatus.OK, "contact added", contact);
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
+            return ResponseHandler.generateResponse(HttpStatus.UNPROCESSABLE_ENTITY, null, e.getMessage());
         }
     }
 }
