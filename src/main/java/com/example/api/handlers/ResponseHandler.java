@@ -26,17 +26,19 @@ public class ResponseHandler {
 
     public static ResponseEntity<Object> generateResponse(Object httpStatusContainer, String resourceName, Object responseObj) {
         if (httpStatusContainer instanceof HttpStatus) {
-            System.out.println("httpStatusContainer is instance of HttpStatus");
             HttpStatus statusCode = (HttpStatus) httpStatusContainer;
 
             return toFormat(statusCode.value(), resourceName, responseObj);
         }
 
         if (httpStatusContainer instanceof ResponseStatusException) {
-            System.out.println("httpStatusContainer is instance of ResponseStatusException");
             ResponseStatusException responseStatusException = (ResponseStatusException) httpStatusContainer;
 
-            return toFormat(responseStatusException.getStatusCode().value(), resourceName, responseStatusException.getReason());
+            Object message = responseObj != null 
+                ? responseObj 
+                : responseStatusException.getMessage();
+
+            return toFormat(responseStatusException.getStatusCode().value(), resourceName, message);
         }
         
         return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
