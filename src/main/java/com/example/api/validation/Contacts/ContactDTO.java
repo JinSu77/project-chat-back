@@ -1,5 +1,7 @@
 package com.example.api.validation.Contacts;
 
+import org.hibernate.validator.constraints.Range;
+
 import com.example.api.models.Contact;
 
 import jakarta.validation.constraints.NotBlank;
@@ -21,6 +23,9 @@ public class ContactDTO {
     @NotBlank(message = "Email is required")
     private String email;
 
+    @Range(min = 1, message = "User id is required")
+    private Integer user_id;
+
     public Contact toContact() {
         Contact contact = new Contact();
 
@@ -31,6 +36,8 @@ public class ContactDTO {
         contact.setFirstName(this.firstName);
 
         contact.setEmail(this.email);
+
+        contact.setUserId(this.user_id);
 
         return contact;
     }

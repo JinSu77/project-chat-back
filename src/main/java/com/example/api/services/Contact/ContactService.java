@@ -21,9 +21,6 @@ public class ContactService {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // @Autowired
-    // private UserRepository userRepository;
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -52,26 +49,6 @@ public class ContactService {
 
         return randomContacts;
     }
-
-    //SANS JWT MARCHE MAIS GET L'USER
-    // public List<Contact> getRandomContacts() {
-
-    //     List<Contact> randomContacts = new ArrayList<>();
-    //     Random random = new Random();
-    //     int count = 5;
-    
-    //     List<Contact> allContacts = (List<Contact>) contactRepository.findAll();
-    
-    //     while (randomContacts.size() < count) {
-    //         int randomIndex = random.nextInt(allContacts.size());
-    //         Contact randomContact = allContacts.get(randomIndex);
-    
-    //         if (!randomContacts.contains(randomContact)) {
-    //             randomContacts.add(randomContact);
-    //         }
-    //     }
-    //     return randomContacts;
-    // }
     
     public Contact getContactById(int id)   
     {

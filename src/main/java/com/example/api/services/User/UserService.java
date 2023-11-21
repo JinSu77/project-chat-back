@@ -1,5 +1,6 @@
 package com.example.api.services.User;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import com.example.api.models.Contact;
 import com.example.api.models.Conversation;
 import com.example.api.models.Role;
 import com.example.api.models.User;
+import com.example.api.repositories.ContactRepository;
 import com.example.api.repositories.RoleRepository;
 import com.example.api.repositories.UserRepository;
 import com.example.api.validation.Auth.UserLoginDTO;
@@ -24,8 +26,10 @@ public class UserService implements IUserService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private ContactRepository contactRepository;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, ContactRepository contactRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -64,15 +68,6 @@ public class UserService implements IUserService {
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        Contact contact = new Contact();
-
-        contact.setUsername(user.getUsername());
-        contact.setFirstName(user.getFirstName());
-        contact.setLastName(user.getLastName());
-        contact.setEmail(user.getEmail());
-        
-        user.setContacts(contact);
-
         Role role = roleRepository.findByName("USER");
 
         if(role == null){
@@ -82,6 +77,18 @@ public class UserService implements IUserService {
         user.setRoles(Arrays.asList(role));
 
         userRepository.save(user);
+
+        Contact contact = new Contact();
+
+        contact.setUsername(user.getUsername());
+        contact.setFirstName(user.getFirstName());
+        contact.setLastName(user.getLastName());
+        contact.setEmail(user.getEmail());
+        contact.setUserId(user.getId());
+        
+        user.setContacts(contact);
+
+        contactRepository.save(contact);
     }
 
     @Override
@@ -128,5 +135,13 @@ public class UserService implements IUserService {
         }
 
         return user.get().getConversations();
+    }
+
+    public void addContactList(Integer userId, Integer contactId) {
+        User user = userRepository.findById(userId).get();
+        Contact contact = contactRepository.findById(contactId).get();
+
+        user.setContacts(contact);
+        userRepository.save(user);
     }
 }
