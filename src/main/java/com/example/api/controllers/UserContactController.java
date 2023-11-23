@@ -32,7 +32,7 @@ public class UserContactController {
 
             Contact contact = contactService.getContactById(contactId);
 
-            return ResponseHandler.generateResponse(HttpStatus.OK, "contact added", contact);
+            return ResponseHandler.generateResponse(HttpStatus.OK, "contact", contact);
         } catch (Exception e) {
             return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }

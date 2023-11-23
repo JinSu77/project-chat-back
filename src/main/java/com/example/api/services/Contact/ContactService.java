@@ -3,10 +3,12 @@ package com.example.api.services.Contact;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.api.models.Contact;
 import com.example.api.repositories.ContactRepository;
@@ -50,16 +52,26 @@ public class ContactService {
         return randomContacts;
     }
     
-    public Contact getContactById(int id)   
+    public Contact getContactById(Integer id)   
     {
-        return contactRepository.findById(id).get();
+        Optional <Contact> contact = contactRepository.findById(id);
+
+        if (contact.isEmpty()) {
+            throw new ResponseStatusException(null, "Contact not found");
+        }
+
+        return contact.get();
     }
 
     public void delete(int id)   
     {  
-        Contact contact = contactRepository.findById(id).get();
+        Optional <Contact> contact = contactRepository.findById(id);
 
-        contactRepository.delete(contact);
+        if (contact.isEmpty()) {
+            throw new ResponseStatusException(null, "Contact not found");
+        }
+
+        contactRepository.delete(contact.get());
     }
 
     public Contact saveContact(ContactDTO contactDTO) {
