@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.api.handlers.ResponseHandler;
 import com.example.api.models.Contact;
@@ -38,9 +39,15 @@ public class ContactController {
     @GetMapping("/{contactId}")
     private ResponseEntity<Object> show(@PathVariable("contactId") int contactId)   
     {  
-        Contact contact = contactService.getContactById(contactId);
+        try {
+            Contact contact = contactService.getContactById(contactId);
 
-        return ResponseHandler.generateResponse(HttpStatus.OK, "contact", contact);
+            return ResponseHandler.generateResponse(HttpStatus.OK, "contact", contact);
+        } catch (ResponseStatusException responseStatusException) {
+            return ResponseHandler.generateResponse(responseStatusException, null, responseStatusException.getMessage());
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, "Contact not found");
+        }
     }
 
     @GetMapping("/random")
@@ -60,8 +67,10 @@ public class ContactController {
             contactService.delete(contactId);
 
             return ResponseEntity.noContent().build();
+        } catch (ResponseStatusException responseStatusException) {
+            return ResponseHandler.generateResponse(responseStatusException, null, responseStatusException.getMessage());
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null, "Contact not found");
+            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, "Contact not found");
         }
     }
 
@@ -74,9 +83,10 @@ public class ContactController {
             Contact contact = contactService.getContactById(contactCreated.getId());
 
             return ResponseHandler.generateResponse(HttpStatus.CREATED, "contact", contact);
-
+        } catch (ResponseStatusException responseStatusException) {
+            return ResponseHandler.generateResponse(responseStatusException, null, responseStatusException.getMessage());
         } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, null, e.getMessage());
+            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }
     }
 
