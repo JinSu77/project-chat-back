@@ -139,12 +139,12 @@ public class UserService implements IUserService {
         return user.get().getConversations();
     }
 
-    public ResponseEntity<Object> addContactList(Integer userId, Integer contactId) {
-        try {
+    public Contact addContactList(Integer userId, Integer contactId) {
+            
             Optional<User> optionalUser = userRepository.findById(userId);
 
             if (optionalUser.isEmpty()) {
-                return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null, "User not found");
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
             }
 
             User user = optionalUser.get();
@@ -152,7 +152,7 @@ public class UserService implements IUserService {
             Optional<Contact> optionalContact = contactRepository.findById(contactId);
 
             if (optionalContact.isEmpty()) {
-                return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null, "Contact not found");
+                throw new ResponseStatusException (HttpStatus.NOT_FOUND, "Contact not found");
             }        
 
             Contact contact = optionalContact.get();
@@ -161,25 +161,19 @@ public class UserService implements IUserService {
 
             userRepository.save(user);
 
-            return ResponseHandler.generateResponse(HttpStatus.OK, "contact", contact);
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
-        }
+            return user.getContacts().stream().filter(c -> c.getId() == contactId).findFirst().get();
     }
 
-    public ResponseEntity<Object> getContactList(Integer userId) {
-        try {
+    public List<Contact> getContactList(Integer userId) {
+        
             Optional<User> optionalUser = userRepository.findById(userId);
 
             if (optionalUser.isEmpty()) {
-                return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null, "User not found");
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
             }
 
             User user = optionalUser.get();
 
-            return ResponseHandler.generateResponse(HttpStatus.OK, "contacts", user.getContacts());
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
-        }
+            return user.getContacts();
     }
 }
