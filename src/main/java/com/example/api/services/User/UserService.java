@@ -2,10 +2,12 @@ package com.example.api.services.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.api.handlers.ResponseHandler;
 import com.example.api.models.Contact;
 import com.example.api.models.Conversation;
 import com.example.api.models.Role;
@@ -137,11 +139,31 @@ public class UserService implements IUserService {
         return user.get().getConversations();
     }
 
-    public void addContactList(Integer userId, Integer contactId) {
-        User user = userRepository.findById(userId).get();
-        Contact contact = contactRepository.findById(contactId).get();
+    public ResponseEntity<Object> addContactList(Integer userId, Integer contactId) {
+        try {
+            Optional<User> optionalUser = userRepository.findById(userId);
 
-        user.setContacts(contact);
-        userRepository.save(user);
+            if (optionalUser.isEmpty()) {
+                return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null, "User not found");
+            }
+
+            User user = optionalUser.get();
+
+            Optional<Contact> optionalContact = contactRepository.findById(contactId);
+
+            if (optionalContact.isEmpty()) {
+                return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null, "Contact not found");
+            }        
+
+            Contact contact = optionalContact.get();
+
+            user.setContacts(contact);
+
+            userRepository.save(user);
+
+            return ResponseHandler.generateResponse(HttpStatus.OK, "contact", contact);
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
+        }
     }
 }
