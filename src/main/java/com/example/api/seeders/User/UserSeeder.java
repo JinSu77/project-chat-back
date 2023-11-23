@@ -64,9 +64,11 @@ public class UserSeeder {
 
             addUserRole(email, roleId);
 
-            // TODO: Créer un seeder UserContact 
-            // Integer userId = jdbc.queryForObject("SELECT id FROM users WHERE email = '" + email + "'", Integer.class);
-            // UserContactSeeder.seed(jdbc, userId);
+            Integer userId = jdbc.queryForObject("SELECT id FROM users WHERE email = '" + email + "'", Integer.class);
+            
+            System.out.println("Seeding user contacts...");
+
+            UserContactSeeder.seed(jdbc, userId);
         }
         
         List<Integer> userIds = jdbc.queryForList("SELECT id FROM users WHERE email in ('" + String.join("', '", emails) + "')", Integer.class);
