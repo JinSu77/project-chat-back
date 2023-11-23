@@ -1,7 +1,5 @@
 package com.example.api.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,14 +19,6 @@ import com.example.api.services.Message.MessagesService;
 public class MessageController {
     @Autowired
     private MessagesService messagesService;
-
-    @GetMapping
-    public ResponseEntity<Object> index()
-    {
-        List<Message> messages = messagesService.getAllMessages();
-
-        return ResponseHandler.generateResponse(HttpStatus.OK, "messages", messages);
-    }
 
     @GetMapping("/{messageId}")
     public ResponseEntity<Object> show(@PathVariable("messageId") int messageId)   
