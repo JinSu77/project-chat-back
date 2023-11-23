@@ -2,12 +2,10 @@ package com.example.api.services.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.example.api.handlers.ResponseHandler;
 import com.example.api.models.Contact;
 import com.example.api.models.Conversation;
 import com.example.api.models.Role;
@@ -157,11 +155,13 @@ public class UserService implements IUserService {
 
             Contact contact = optionalContact.get();
 
-            user.setContacts(contact);
+            user.getContacts().add(contact);
+
+            contact.getUsers().add(user);
 
             userRepository.save(user);
 
-            return user.getContacts().stream().filter(c -> c.getId() == contactId).findFirst().get();
+            return contact;
     }
 
     public List<Contact> getContactList(Integer userId) {
