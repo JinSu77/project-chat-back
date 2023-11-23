@@ -166,4 +166,20 @@ public class UserService implements IUserService {
             return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }
     }
+
+    public ResponseEntity<Object> getContactList(Integer userId) {
+        try {
+            Optional<User> optionalUser = userRepository.findById(userId);
+
+            if (optionalUser.isEmpty()) {
+                return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null, "User not found");
+            }
+
+            User user = optionalUser.get();
+
+            return ResponseHandler.generateResponse(HttpStatus.OK, "contacts", user.getContacts());
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
+        }
+    }
 }
