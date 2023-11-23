@@ -6,7 +6,8 @@ import java.util.Optional;
 import com.example.api.models.Message;
 
 public interface IMessagesService {
-    List<Message> getAllMessages();
+    List<Message> getAllMessagesFromChannel(Integer channelId);
+    List<Message> getAllMessagesFromConversation(Integer conversationId);
     Message getMessageById(Integer id);
     Optional<Message> findMessageById(Integer id);
     void delete(Integer id);
