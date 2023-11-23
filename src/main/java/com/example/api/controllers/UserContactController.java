@@ -36,6 +36,20 @@ public class UserContactController {
         }
     }
 
+    @GetMapping("/{contactId}")
+    public ResponseEntity<Object> show(
+        @PathVariable("userId") Integer userId,
+        @PathVariable("contactId") Integer contactId
+    ) {
+        try {
+            Contact contact = contactService.getContactById(contactId);
+
+            return ResponseHandler.generateResponse(HttpStatus.OK, "contact", contact);
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
+        }
+    }
+
     @PostMapping("/{contactId}")
     public ResponseEntity<Object> store(
         @PathVariable("userId") Integer userId,
