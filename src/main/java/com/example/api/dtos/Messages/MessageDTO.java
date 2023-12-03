@@ -1,4 +1,4 @@
-package com.example.api.validation.Messages;
+package com.example.api.dtos.Messages;
 
 import org.hibernate.validator.constraints.Range;
 

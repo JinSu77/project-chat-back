@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.api.dtos.Contacts.ContactDTO;
 import com.example.api.handlers.ResponseHandler;
 import com.example.api.models.Contact;
 import com.example.api.services.Contact.ContactService;
-import com.example.api.validation.Contacts.ContactDTO;
 
 import jakarta.validation.Valid;
 

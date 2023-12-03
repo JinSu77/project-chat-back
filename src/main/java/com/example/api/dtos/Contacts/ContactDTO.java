@@ -1,4 +1,4 @@
-package com.example.api.validation.Contacts;
+package com.example.api.dtos.Contacts;
 
 import org.hibernate.validator.constraints.Range;
 

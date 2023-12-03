@@ -11,10 +11,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.api.dtos.Contacts.ContactDTO;
 import com.example.api.models.Contact;
 import com.example.api.repositories.ContactRepository;
 import com.example.api.services.Auth.JwtUtil;
-import com.example.api.validation.Contacts.ContactDTO;
 
 @Service
 public class ContactService {

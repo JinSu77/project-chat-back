@@ -1,4 +1,4 @@
-package com.example.api.validation.Auth;
+package com.example.api.dtos.Auth;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

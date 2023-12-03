@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.api.dtos.Messages.MessageDTO;
 import com.example.api.handlers.ResponseHandler;
 import com.example.api.models.Channel;
 import com.example.api.models.Message;
 import com.example.api.services.Auth.JwtUtil;
 import com.example.api.services.Channel.ChannelService;
 import com.example.api.services.Message.MessagesService;
-import com.example.api.validation.Messages.MessageDTO;
 
 import jakarta.validation.Valid;
 

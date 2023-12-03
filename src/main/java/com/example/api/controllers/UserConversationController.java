@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.api.dtos.Conversations.ConversationDTO;
 import com.example.api.handlers.ResponseHandler;
 import com.example.api.models.Conversation;
 import com.example.api.models.User;
 import com.example.api.repositories.UserRepository;
 import com.example.api.services.Conversation.ConversationService;
 import com.example.api.services.User.UserService;
-import com.example.api.validation.Conversations.ConversationDTO;
 
 import jakarta.validation.Valid;
 

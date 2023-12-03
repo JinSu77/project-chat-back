@@ -6,6 +6,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.api.dtos.Auth.UserLoginDTO;
+import com.example.api.dtos.Users.UserDto;
 import com.example.api.models.Contact;
 import com.example.api.models.Conversation;
 import com.example.api.models.Role;
@@ -13,8 +15,6 @@ import com.example.api.models.User;
 import com.example.api.repositories.ContactRepository;
 import com.example.api.repositories.RoleRepository;
 import com.example.api.repositories.UserRepository;
-import com.example.api.validation.Auth.UserLoginDTO;
-import com.example.api.validation.Users.UserDto;
 
 import java.util.Arrays;
 import java.util.List;

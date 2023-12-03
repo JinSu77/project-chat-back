@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.api.dtos.Auth.UserLoginDTO;
+import com.example.api.dtos.Users.UserDto;
 import com.example.api.handlers.ResponseHandler;
 import com.example.api.models.User;
 import com.example.api.repositories.UserRepository;
 import com.example.api.services.Auth.JwtUtil;
 import com.example.api.services.User.UserService;
-import com.example.api.validation.Auth.UserLoginDTO;
-import com.example.api.validation.Users.UserDto;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;

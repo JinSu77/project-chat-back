@@ -6,7 +6,9 @@ import java.util.List;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.example.api.dtos.Users.ConversationUserDTO;
 import com.example.api.enums.ConversationType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
@@ -43,7 +45,7 @@ public class Conversation {
         joinColumns={@JoinColumn(name="CONVERSATION_ID", referencedColumnName="ID")},
         inverseJoinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")}
     )
-    @JsonIgnoreProperties(value = "conversations")
+    @JsonIgnoreProperties(value = {"roles", "conversations"})
     private List<User> participants = new ArrayList<User>();
 
     @OneToMany(fetch = FetchType.LAZY)    

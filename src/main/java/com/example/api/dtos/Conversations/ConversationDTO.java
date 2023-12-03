@@ -1,4 +1,4 @@
-package com.example.api.validation.Conversations;
+package com.example.api.dtos.Conversations;
 
 import java.util.List;
 
