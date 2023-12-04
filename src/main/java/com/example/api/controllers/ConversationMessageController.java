@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.example.api.dtos.Messages.MessageDTO;
 import com.example.api.handlers.ResponseHandler;
 import com.example.api.models.Message;
+import com.example.api.models.User;
 import com.example.api.services.Auth.JwtUtil;
 import com.example.api.services.Message.MessagesService;
 
@@ -52,9 +53,11 @@ public class ConversationMessageController {
         @PathVariable("conversationId") Integer conversationId
     ) {
         try {
-            Integer userId = jwtUtil.getAuthUserId(authorization);
+            String token = authorization.replace("Bearer ", "");
 
-            Message message = messageDTO.toMessage(conversationId, userId, null);
+            User user = jwtUtil.getAuthUser(token);
+
+            Message message = messageDTO.toMessage(conversationId, user.getId(), user.getUsername(), null);
 
             messagesService.save(message);
         

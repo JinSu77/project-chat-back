@@ -22,6 +22,7 @@ public class MessageDTO {
     public Message toMessage(
         @Nullable Integer conversation_id, 
         Integer user_id,
+        String username,
         @Nullable Channel channel
     ) {
         Message message = new Message();
@@ -35,6 +36,8 @@ public class MessageDTO {
         if (conversation_id != null) message.setConversationId(conversation_id);
         
         message.setUserId(user_id);
+
+        message.setUsername(username);
 
         return message;
     }

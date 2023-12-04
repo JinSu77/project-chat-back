@@ -37,6 +37,9 @@ public class Message {
     private Integer user_id;
 
     @Column(nullable = false)
+    private String username;
+
+    @Column(nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @CreationTimestamp
     private Date created_at;
@@ -64,6 +67,10 @@ public class Message {
 
     public void setUserId(Integer user_id) {
         this.user_id = user_id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setCreatedAt(Date created_at) {

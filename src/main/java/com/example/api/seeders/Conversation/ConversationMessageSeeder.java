@@ -23,10 +23,11 @@ public class ConversationMessageSeeder {
         for (int i = 0; i < NUMBER_OF_MESSAGES; i++) {
             Integer randomInteger = random.nextInt(userIds.size());
             Integer userId = userIds.get(randomInteger);
+            String username = jdbc.queryForObject("SELECT username FROM users WHERE id = " + userId, String.class);
             String content = faker.lorem().sentence();
             Timestamp created_at = Timestamp.valueOf(LocalDateTime.now());
 
-            jdbc.execute("INSERT INTO messages (content, conversation_id, created_at, user_id) VALUES " 
+            jdbc.execute("INSERT INTO messages (content, conversation_id, created_at, user_id, username) VALUES " 
                 + "('" 
                 + content 
                 + "', '" 
@@ -35,6 +36,8 @@ public class ConversationMessageSeeder {
                 + created_at
                 + "', '" 
                 + userId
+                + "', '"
+                + username
                 + "')"
             );   
         }

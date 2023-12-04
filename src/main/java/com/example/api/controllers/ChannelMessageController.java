@@ -19,6 +19,7 @@ import com.example.api.dtos.Messages.MessageDTO;
 import com.example.api.handlers.ResponseHandler;
 import com.example.api.models.Channel;
 import com.example.api.models.Message;
+import com.example.api.models.User;
 import com.example.api.services.Auth.JwtUtil;
 import com.example.api.services.Channel.ChannelService;
 import com.example.api.services.Message.MessagesService;
@@ -64,9 +65,11 @@ public class ChannelMessageController {
                 return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null, "Channel not found");
             }
 
-            Integer userId = jwtUtil.getAuthUserId(authorization);
+            String token = authorization.replace("Bearer ", "");
 
-            Message message = messageDTO.toMessage(null, userId, channel.get());
+            User user = jwtUtil.getAuthUser(token);
+
+            Message message = messageDTO.toMessage(null, user.getId(), user.getUsername(), channel.get());
 
             messagesService.save(message);
 

@@ -32,10 +32,12 @@ public class ChannelMessageSeeder {
             Integer userIndex = faker.random().nextInt(0, userIds.size() - 1);
             Integer channelId = channelIds.get(channelIndex);
             Integer userId = userIds.get(userIndex);
+            String username = jdbc.queryForObject("SELECT username FROM users WHERE id = " + userId, String.class);
             String content = faker.lorem().sentence();
             Timestamp created_at = Timestamp.valueOf(LocalDateTime.now());
 
-            jdbc.execute("INSERT INTO messages (channel_id, content, created_at, user_id) VALUES " 
+
+            jdbc.execute("INSERT INTO messages (channel_id, content, created_at, user_id, username) VALUES " 
                 + "(" 
                 + channelId 
                 + ", '" 
@@ -44,6 +46,8 @@ public class ChannelMessageSeeder {
                 + created_at
                 + "', '" 
                 + userId
+                + "', '"
+                + username
                 + "')"
             );    
         }
