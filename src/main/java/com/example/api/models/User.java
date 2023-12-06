@@ -7,7 +7,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -65,7 +64,7 @@ public class User {
         joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
         inverseJoinColumns={@JoinColumn(name="CONVERSATION_ID", referencedColumnName="ID")}
     )
-    @JsonIgnoreProperties(value = {"participants", "messages"})
+    @JsonIgnore
     private List<Conversation> conversations = new ArrayList<Conversation>();
     
     @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)

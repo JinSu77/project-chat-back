@@ -3,8 +3,6 @@ package com.example.api.models;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.annotations.OnDelete;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;

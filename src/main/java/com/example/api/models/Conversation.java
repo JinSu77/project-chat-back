@@ -7,6 +7,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.example.api.enums.ConversationType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
@@ -48,6 +49,7 @@ public class Conversation {
 
     @OneToMany(fetch = FetchType.LAZY)    
     @JoinColumn(name = "conversation_id")
+    @JsonIgnore
     private List<Message> messages = new ArrayList<Message>();
 
     public List<Message> messages() {

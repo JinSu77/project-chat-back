@@ -2,6 +2,8 @@ package com.example.api.models;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +27,7 @@ public class Channel {
     private String name;
 
     @OneToMany(mappedBy = "channel")
+    @JsonIgnore
     private List<Message> messages;
 
     public List<Message> messages() {
