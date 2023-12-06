@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class JwtUtil {
     private final String secret_key = "change_this_secret_key"; // TODO: change this secret key
-    private long accessTokenValidity = 20;
+    private long accessTokenValidity = 60;
 
     private final JwtParser jwtParser;
     private final UserRepository userRepository;
