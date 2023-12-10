@@ -13,4 +13,5 @@ public interface IUserService {
     List<Conversation> findAllConversationsFromUser(Integer userId);
     User login(UserLoginDTO userLoginDTO);
     void save(UserDto userDto);
+    List<User> getRandomContactListFor(User user);
 }

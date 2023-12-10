@@ -8,7 +8,6 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -67,13 +66,14 @@ public class User {
     @JsonIgnore
     private List<Conversation> conversations = new ArrayList<Conversation>();
     
-    @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
-            name="users_contacts",
-            joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
-            inverseJoinColumns={@JoinColumn(name="CONTACT_ID", referencedColumnName="ID")})
+        name = "user_contacts",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "contact_id")
+    )
     @JsonIgnore
-    private List<Contact> contacts = new ArrayList<Contact>();
+    private List<User> contacts = new ArrayList<User>();
 
     public List<Conversation> conversations() { 
         return conversations; 
@@ -81,9 +81,5 @@ public class User {
 
     public void setConversations(List<Conversation> conversations) { 
         this.conversations = conversations; 
-    }
-
-    public void setContacts(Contact contact) {
-        this.contacts.add(contact);
     }
 }
