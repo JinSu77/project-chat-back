@@ -8,7 +8,7 @@ public class UserConversationSeeder {
     private static JdbcTemplate jdbc;
 
     public static Integer[] seed(JdbcTemplate jdbcTemplate, List<Integer> userIds, String[] usernames) {
-        System.out.println("Seeding users conversations...");
+        System.out.println("Seeding users conversations and contacts...");
 
         jdbc = jdbcTemplate;
         Integer firstParticipantUserId = userIds.get(0);
@@ -19,27 +19,30 @@ public class UserConversationSeeder {
         System.out.println("###### Username: " + firstParticipantUsername);
         System.out.println("####################################################################");
 
-        String[] filteredUsernames = removeStringFromStringArray(firstParticipantUsername, usernames);
+        String[] filteredUsernames = removeElementFromArray(firstParticipantUsername, usernames);
         Integer[] conversationIds = new Integer[filteredUsernames.length];
 
-        for (int j = 0; j < userIds.size() - 1; j++) {
-            String secondParticipantUsername = filteredUsernames[j];
+        for (int i = 0; i < userIds.size() - 1; i++) {
+            String secondParticipantUsername = filteredUsernames[i];
             Integer secondParticipantUserId = jdbc.queryForObject("SELECT id FROM users WHERE username = '" + secondParticipantUsername + "'", Integer.class);
 
             jdbc.execute("INSERT INTO conversations (type) VALUES ('PRIVATE')");
 
             Integer conversationId = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
-            conversationIds[j] = conversationId;
+            conversationIds[i] = conversationId;
 
             jdbc.execute("INSERT INTO users_conversations (user_id, conversation_id) VALUES (" + firstParticipantUserId + ", " + conversationId + ")");
             jdbc.execute("INSERT INTO users_conversations (user_id, conversation_id) VALUES (" + secondParticipantUserId + ", " + conversationId + ")");
+            
+            jdbc.execute("INSERT INTO user_contacts (user_id, contact_id) VALUES (" + firstParticipantUserId + ", " + secondParticipantUserId + ")");
+            jdbc.execute("INSERT INTO user_contacts (user_id, contact_id) VALUES (" + secondParticipantUserId + ", " + firstParticipantUserId + ")");
         }
 
         return conversationIds;
     }
     
 
-    private static String[] removeStringFromStringArray(String username, String[] usernames) {
+    private static String[] removeElementFromArray(String username, String[] usernames) {
         String[] filteredUsernames = new String[usernames.length - 1];
         int indexToRemove = -1;
 
