@@ -14,6 +14,7 @@ import com.github.javafaker.Faker;
 public class UserSeeder {
     private static JdbcTemplate jdbc;
     private static PasswordEncoder passwordEncoder;
+
     private static final String USER_PASSWORD = "password";
     private static final Integer NUMBER_OF_USERS = 10;
     
@@ -63,12 +64,6 @@ public class UserSeeder {
             );
 
             addUserRole(email, roleId);
-
-            Integer userId = jdbc.queryForObject("SELECT id FROM users WHERE email = '" + email + "'", Integer.class);
-            
-            System.out.println("Seeding user contacts...");
-
-            UserContactSeeder.seed(jdbc, userId);
         }
         
         List<Integer> userIds = jdbc.queryForList("SELECT id FROM users WHERE email in ('" + String.join("', '", emails) + "')", Integer.class);
