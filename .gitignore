@@ -2,4 +2,4 @@
 ### VS Code ###
 .vscode/
 /target
-./project-chat-front
+/project-chat-front
