@@ -14,6 +14,7 @@ import com.example.api.models.Role;
 import com.example.api.models.User;
 import com.example.api.repositories.RoleRepository;
 import com.example.api.repositories.UserRepository;
+import com.example.api.services.Conversation.ConversationService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +31,9 @@ public class UserService implements IUserService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private ConversationService conversationService;
 
     public UserService(
         UserRepository userRepository, 
@@ -151,6 +155,8 @@ public class UserService implements IUserService {
 
             userRepository.save(user);
             userRepository.save(contact);
+
+            conversationService.createConversationBetweenUserAndContact(user, contact);
 
             return user.getContacts();
     }
