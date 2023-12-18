@@ -15,7 +15,8 @@ public class UserSeeder {
     private static JdbcTemplate jdbc;
     private static PasswordEncoder passwordEncoder;
 
-    private static final String USER_PASSWORD = "password";
+    private static final String DEMO_USERNAME= "pierre.lerocher";
+    private static final String USERS_PASSWORD = "password";
     private static final Integer NUMBER_OF_USERS = 10;
     
     public static void seed(JdbcTemplate jdbcTemplate) {
@@ -35,7 +36,10 @@ public class UserSeeder {
 
         for (int i = 0; i < NUMBER_OF_USERS; i++) {
             String email = faker.internet().emailAddress();
-            String username = faker.name().username();
+
+            String username = (i != 0) 
+                ? faker.name().username()
+                : DEMO_USERNAME;
 
             for (int j = 0; j < NUMBER_OF_USERS; j++) {
                 if (emails[j] == email) {
@@ -57,7 +61,7 @@ public class UserSeeder {
                 + "', '" 
                 + faker.name().lastName() 
                 + "', '" 
-                + passwordEncoder.encode(USER_PASSWORD) 
+                + passwordEncoder.encode(USERS_PASSWORD) 
                 + "', '" 
                 +  username
                 + "')"
@@ -66,7 +70,7 @@ public class UserSeeder {
             addUserRole(email, roleId);
         }
         
-        List<Integer> userIds = jdbc.queryForList("SELECT id FROM users WHERE email in ('" + String.join("', '", emails) + "')", Integer.class);
+        List<Integer> userIds = jdbc.queryForList("SELECT id FROM users WHERE email in ('" + String.join("', '", emails) + "') ORDER BY id", Integer.class);
 
         ChannelMessageSeeder.seed(jdbc, userIds);
 
