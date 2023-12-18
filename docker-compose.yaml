@@ -1,9 +1,6 @@
 version: '3.8'
 
 services:
-version: '3.8'
-
-services:
   mysql:
     container_name: mysql
     environment:
@@ -72,6 +69,7 @@ services:
       - mercure_data:/data
       - mercure_config:/config
 
+      # Must clone project-chat-front to make this work /!\
 #  react:
 #    container_name: react
 #    build: 
