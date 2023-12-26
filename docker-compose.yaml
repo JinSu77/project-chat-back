@@ -60,6 +60,9 @@ services:
       SERVER_NAME: ':80'
       MERCURE_PUBLISHER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
       MERCURE_SUBSCRIBER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
+      MERCURE_EXTRA_DIRECTIVES:
+        cors_origins http://localhost:3000 http://localhost:8000
+        
     # Uncomment the following line to enable the development mode
     command: /usr/bin/caddy run --config /etc/caddy/Caddyfile.dev
     ports:
@@ -68,6 +71,8 @@ services:
     volumes:
       - mercure_data:/data
       - mercure_config:/config
+    networks:
+      - spring-boot-network
 
       # Must clone project-chat-front to make this work /!\
 #  react:
