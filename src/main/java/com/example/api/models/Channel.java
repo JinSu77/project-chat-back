@@ -17,7 +17,7 @@ import lombok.Getter;
 @Entity
 @Table(name = "channels")
 @Getter
-public class Channel {
+public class Channel extends Model {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
