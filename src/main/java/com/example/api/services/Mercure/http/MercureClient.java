@@ -18,7 +18,7 @@ import com.example.api.services.Mercure.http.exceptions.ForbiddenException;
 import com.example.api.services.Mercure.http.exceptions.NotFoundException;
 import com.example.api.services.Mercure.http.exceptions.UnauthorizedException;
 
-// Crédits to vitorvillar : https://github.com/vitorluis/java-mercure
+// TODO: Credits to vitorvillar : https://github.com/vitorluis/java-mercure
 public class MercureClient {
     private HttpClient httpClient;
     private String url;
