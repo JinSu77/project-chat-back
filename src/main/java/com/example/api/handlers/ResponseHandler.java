@@ -12,12 +12,15 @@ public class ResponseHandler {
     private static final Integer[] handledStatus = {
         200,
         201,
+        401,
+        403,
         404,
         422,
         500,
     };
 
     private static final Integer[] errors = {
+        401,
         403,
         404,
         422,
@@ -46,8 +49,10 @@ public class ResponseHandler {
 
     private static ResponseEntity<Object> toFormat(Integer httpStatusCode, String resourceName, Object responseObj) {
         if (! Arrays.asList(handledStatus).contains(httpStatusCode)) {
+            Map<String, Object> error = Map.of("error", "This status code is not handled by ResponseHandler class.");
+
             return new ResponseEntity<Object>(
-                Map.of("error", "This status code is not handled by ResponseHandler class."),
+                Map.of("data", error),
                 HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
@@ -55,6 +60,10 @@ public class ResponseHandler {
         Map<String, Object> response = new HashMap<String, Object>();
 
         if (Arrays.asList(errors).contains(httpStatusCode)) {
+/*             System.out.println("response: " + response);
+            System.out.println("responseObj: " + responseObj);
+            System.out.println("status code: " + httpStatusCode); */
+
             return errorResponse(httpStatusCode, responseObj, response);
         }
 
