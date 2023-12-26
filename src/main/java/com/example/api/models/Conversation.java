@@ -28,7 +28,7 @@ import lombok.Getter;
 @Entity
 @Table(name = "conversations")
 @Getter
-public class Conversation {
+public class Conversation extends Model {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id; 

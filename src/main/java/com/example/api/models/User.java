@@ -26,7 +26,7 @@ import java.lang.String;
 @Table(name = "users")
 @Getter
 @Setter
-public class User {
+public class User extends Model {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
