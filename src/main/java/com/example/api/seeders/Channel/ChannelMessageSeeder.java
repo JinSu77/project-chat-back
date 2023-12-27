@@ -10,32 +10,35 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import com.github.javafaker.Faker;
 
 public class ChannelMessageSeeder {
-    private static JdbcTemplate jdbc;
-    private static Integer NUMBER_OF_MESSAGES_PER_USER = 10;
+    private JdbcTemplate jdbc;
 
-    public static void seed(JdbcTemplate jdbcTemplate, List<Integer> userIds) {
-        Integer channelCounts = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM channels", Integer.class);
+    public ChannelMessageSeeder(JdbcTemplate jdbcTemplate) {
+        this.jdbc = jdbcTemplate;
+    }
+
+    public void seed(List<Integer> userIds, Integer numberOfMessagesPerUser, String[] messages) {
+        Integer channelCounts = jdbc.queryForObject("SELECT COUNT(*) FROM channels", Integer.class);
 
         if (channelCounts == 0) return;
 
         System.out.println("Seeding channel messages...");
 
         Faker faker = new Faker(Locale.FRANCE);
-        jdbc = jdbcTemplate;
 
         List<Integer>  channelIds = jdbc.queryForList("SELECT id FROM channels", Integer.class);
 
-        Integer totalMessages = userIds.size() * NUMBER_OF_MESSAGES_PER_USER;
+        Integer totalMessages = userIds.size() * numberOfMessagesPerUser;
 
         for (int i = 0; i < totalMessages; i++) {
             Integer channelIndex = faker.random().nextInt(0, channelIds.size() - 1);
             Integer userIndex = faker.random().nextInt(0, userIds.size() - 1);
             Integer channelId = channelIds.get(channelIndex);
             Integer userId = userIds.get(userIndex);
+            
             String username = jdbc.queryForObject("SELECT username FROM users WHERE id = " + userId, String.class);
-            String content = faker.lorem().sentence();
-            Timestamp created_at = Timestamp.valueOf(LocalDateTime.now());
+            String content = messages[faker.random().nextInt(0, messages.length - 1)].replace("'", "''");
 
+            Timestamp created_at = Timestamp.valueOf(LocalDateTime.now());
 
             jdbc.execute("INSERT INTO messages (channel_id, content, created_at, user_id, username) VALUES " 
                 + "(" 

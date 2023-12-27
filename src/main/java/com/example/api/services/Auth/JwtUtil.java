@@ -3,6 +3,7 @@ package com.example.api.services.Auth;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,9 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class JwtUtil {
-    private final String secret_key = "change_this_secret_key"; // TODO: change this secret key
+    @Value("${application.jwt.secret-key}")
+    private String secret_key;
+
     private long accessTokenValidity = 60;
 
     private final JwtParser jwtParser;
@@ -23,7 +26,7 @@ public class JwtUtil {
     private final String TOKEN_HEADER = "Authorization";
     private final String TOKEN_PREFIX = "Bearer ";
 
-    public JwtUtil(UserRepository userRepository) {
+    public JwtUtil(UserRepository userRepository, @Value("${application.jwt.secret-key}") String secret_key) {
         this.jwtParser = Jwts.parser().setSigningKey(secret_key);
         this.userRepository = userRepository;
     }

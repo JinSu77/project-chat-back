@@ -2,6 +2,7 @@ package com.example.api.configuration;
 
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,6 +18,9 @@ import com.example.api.services.Auth.JwtAuthorizationFilter;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    @Value("${application.frontend.url}")
+    private String frontend_url;
+
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
     public SecurityConfig(JwtAuthorizationFilter jwtAuthorizationFilter) {
@@ -31,7 +35,7 @@ public class SecurityConfig {
                     var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
                     corsConfiguration.setAllowCredentials(true);
                     corsConfiguration.setAllowedOrigins(
-                        Arrays.asList("http://localhost:3000") // TODO: use env variable
+                        Arrays.asList(frontend_url)
                     );
                     corsConfiguration.addAllowedHeader("*");
                     corsConfiguration.addAllowedMethod("*");
