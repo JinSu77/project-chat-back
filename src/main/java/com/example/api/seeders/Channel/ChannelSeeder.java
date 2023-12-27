@@ -3,8 +3,14 @@ package com.example.api.seeders.Channel;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class ChannelSeeder {
-    public static void seed(JdbcTemplate jdbcTemplate) {
-        Integer channelCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM channels", Integer.class);
+    private JdbcTemplate jdbc;
+
+    public ChannelSeeder(JdbcTemplate jdbcTemplate) {
+        this.jdbc = jdbcTemplate;
+    }
+
+    public void seed() {
+        Integer channelCount = jdbc.queryForObject("SELECT COUNT(*) FROM channels", Integer.class);
 
         if (channelCount != 0) return;
 
@@ -12,11 +18,11 @@ public class ChannelSeeder {
 
         for (int i = 1; i <= 10; i++) {
             if (i == 10) {
-                jdbcTemplate.execute("INSERT INTO channels (name) VALUES ('Channel0" + i + "')");
+                jdbc.execute("INSERT INTO channels (name) VALUES ('Channel0" + i + "')");
                 return;
             }
 
-            jdbcTemplate.execute("INSERT INTO channels (name) VALUES ('Channel00" + i + "')");
+            jdbc.execute("INSERT INTO channels (name) VALUES ('Channel00" + i + "')");
         }
     }
 }

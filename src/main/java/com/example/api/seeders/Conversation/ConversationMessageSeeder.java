@@ -10,26 +10,30 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import com.github.javafaker.Faker;
 
 public class ConversationMessageSeeder {
-        private static JdbcTemplate jdbc;
-        private static final Integer NUMBER_OF_MESSAGES = 5;
+    private JdbcTemplate jdbc;
 
-    public static void seed(JdbcTemplate jdbcTemplate, Integer conversationId) {
-        jdbc = jdbcTemplate;
+    public ConversationMessageSeeder(JdbcTemplate jdbcTemplate) {
+        this.jdbc = jdbcTemplate;
+    }
+
+    public void seed(Integer conversationId, Integer numberOfMessages, String[] messages) {
         Faker faker = new Faker();
         Random random = new Random();
 
         List<Integer> userIds = jdbc.queryForList("SELECT user_id FROM users_conversations WHERE conversation_id = " + conversationId, Integer.class);
 
-        for (int i = 0; i < NUMBER_OF_MESSAGES; i++) {
+        for (int i = 0; i < numberOfMessages; i++) {
             Integer randomInteger = random.nextInt(userIds.size());
             Integer userId = userIds.get(randomInteger);
+
             String username = jdbc.queryForObject("SELECT username FROM users WHERE id = " + userId, String.class);
-            String content = faker.lorem().sentence();
+            String content = messages[faker.random().nextInt(0, messages.length - 1)].replace("'", "''");
+
             Timestamp created_at = Timestamp.valueOf(LocalDateTime.now());
 
             jdbc.execute("INSERT INTO messages (content, conversation_id, created_at, user_id, username) VALUES " 
                 + "('" 
-                + content 
+                + content
                 + "', '" 
                 + conversationId
                 + "', '" 

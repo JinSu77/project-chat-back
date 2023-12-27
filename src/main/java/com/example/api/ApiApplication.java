@@ -1,6 +1,7 @@
 package com.example.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -18,18 +19,42 @@ public class ApiApplication {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	private final String environment = "development"; // TODO: create a config file
+	@Value("${application.seeder.demo.username}")
+    private String DEMO_USERNAME;
+
+    @Value("${application.seeder.demo.password}")
+    private String DEMO_USERS_PASSWORD;
+
+    @Value("${application.seeder.number-of-users}")
+    private String NUMBER_OF_USERS;
+
+	@Value("${application.seeder.channel.number-of-messages-per-user}")
+    private String NUMBER_OF_CHANNEL_MESSAGES_PER_USER;
+
+	@Value("${application.seeder.number-of-messages-per-conversation}")
+	private String NUMBER_OF_MESSAGES_PER_CONVERSATION;
+
+	@Value("${application.environment}")
+	private String environment;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ApiApplication.class, args);
 	}
 
 	@EventListener(ContextRefreshedEvent.class)
-	public void seed(ContextRefreshedEvent event) {	
+	public void seed(ContextRefreshedEvent event) {
 		if (! environment.equals("development")) return;
 
-		ChannelSeeder.seed(jdbcTemplate);
+		ChannelSeeder channelSeeder = new ChannelSeeder(jdbcTemplate);
+		channelSeeder.seed();
 
-		UserSeeder.seed(jdbcTemplate);		
+		UserSeeder userSeeder = new UserSeeder(jdbcTemplate);
+		userSeeder.seed(
+			DEMO_USERNAME,
+			DEMO_USERS_PASSWORD,
+			Integer.parseInt(NUMBER_OF_USERS),
+			Integer.parseInt(NUMBER_OF_CHANNEL_MESSAGES_PER_USER),
+			Integer.parseInt(NUMBER_OF_MESSAGES_PER_CONVERSATION)
+		);
 	}
 }
