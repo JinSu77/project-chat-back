@@ -10,13 +10,18 @@ import org.springframework.stereotype.Component;
 import com.example.api.models.User;
 import com.example.api.repositories.UserRepository;
 
+import java.util.Base64;
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Component
 public class JwtUtil {
     @Value("${application.jwt.secret-key}")
     private String secret_key;
+
+    @Value("${application.mercure.subscriber.jwt-key}")
+    private String mercureSubscriberJwtKey;
 
     private long accessTokenValidity = 60;
 
@@ -43,6 +48,24 @@ public class JwtUtil {
                 .setClaims(claims)
                 .setExpiration(tokenValidity)
                 .signWith(SignatureAlgorithm.HS256, secret_key)
+                .compact();
+    }
+
+    public String createMercureToken() {
+        Claims claims = Jwts.claims();
+        claims.put("mercure", Map.of(
+                "subscribe", new String[] { "https://example.com/my-private-topic" },
+                "publish", new String[] { "*" }
+        ));
+
+        Date tokenCreateTime = new Date();
+        Date tokenValidity = new Date(tokenCreateTime.getTime() + TimeUnit.MINUTES.toMillis(accessTokenValidity));
+        String secretKeyBase64 = Base64.getEncoder().encodeToString(mercureSubscriberJwtKey.getBytes());
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setExpiration(tokenValidity)
+                .signWith(SignatureAlgorithm.HS256, secretKeyBase64)
                 .compact();
     }
 

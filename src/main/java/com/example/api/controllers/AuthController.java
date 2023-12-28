@@ -62,12 +62,11 @@ public class AuthController {
         try {
             User user = userService.login(userLoginDTO);
 
-            String token = jwtUtil.createToken(user);
-
             Map<String, Object> response = Map.of(
                 "message", "logged in successfully",
-                "token", token,
-                "user", user
+                "token", jwtUtil.createToken(user),
+                "user", user,
+                "mercureToken", jwtUtil.createMercureToken()
             );
 
             return ResponseHandler.generateResponse(HttpStatus.OK, null, response);
