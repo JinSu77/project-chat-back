@@ -38,15 +38,13 @@ public class ChannelMessageSeeder {
             String username = jdbc.queryForObject("SELECT username FROM users WHERE id = " + userId, String.class);
             String content = messages[faker.random().nextInt(0, messages.length - 1)].replace("'", "''");
 
-            Timestamp created_at = Timestamp.valueOf(LocalDateTime.now());
-
             jdbc.execute("INSERT INTO messages (channel_id, content, created_at, user_id, username) VALUES " 
                 + "(" 
                 + channelId 
                 + ", '" 
                 + content
                 + "', '" 
-                + created_at
+                + Timestamp.valueOf(LocalDateTime.now())
                 + "', '" 
                 + userId
                 + "', '"
