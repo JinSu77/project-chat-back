@@ -60,10 +60,6 @@ public class ResponseHandler {
         Map<String, Object> response = new HashMap<String, Object>();
 
         if (Arrays.asList(errors).contains(httpStatusCode)) {
-/*             System.out.println("response: " + response);
-            System.out.println("responseObj: " + responseObj);
-            System.out.println("status code: " + httpStatusCode); */
-
             return errorResponse(httpStatusCode, responseObj, response);
         }
 
