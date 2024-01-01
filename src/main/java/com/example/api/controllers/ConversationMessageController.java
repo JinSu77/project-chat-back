@@ -19,6 +19,8 @@ import com.example.api.handlers.ResponseHandler;
 import com.example.api.models.Message;
 import com.example.api.models.User;
 import com.example.api.services.Auth.JwtUtil;
+import com.example.api.services.Mercure.MercureMessage;
+import com.example.api.services.Mercure.MercurePublisher;
 import com.example.api.services.Message.MessagesService;
 
 import jakarta.validation.Valid;
@@ -50,9 +52,12 @@ public class ConversationMessageController {
     public ResponseEntity<Object> store(
         @Valid @RequestBody MessageDTO messageDTO, 
         @RequestHeader("Authorization") String authorization, 
+        @RequestHeader("MercureAuthorization") String mercureAuthorization,
         @PathVariable("conversationId") Integer conversationId
     ) {
         try {
+            String mercureToken = mercureAuthorization.replace("Bearer ", "");
+
             String token = authorization.replace("Bearer ", "");
 
             User user = jwtUtil.getAuthUser(token);
@@ -60,6 +65,12 @@ public class ConversationMessageController {
             Message message = messageDTO.toMessage(conversationId, user.getId(), user.getUsername(), null);
 
             messagesService.save(message);
+
+            var mercurePublisher = new MercurePublisher("http://mercure/.well-known/mercure", mercureToken);
+
+            var mercureMessage = new MercureMessage(message.toJson(), "/conversations/" + conversationId);
+
+            mercurePublisher.publish(mercureMessage);
         
             return ResponseHandler.generateResponse(HttpStatus.OK, "message", message);
         } catch (Exception e) {

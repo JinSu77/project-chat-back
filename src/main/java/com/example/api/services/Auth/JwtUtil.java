@@ -54,8 +54,14 @@ public class JwtUtil {
     public String createMercureToken() {
         Claims claims = Jwts.claims();
         claims.put("mercure", Map.of(
-                "subscribe", new String[] { "https://example.com/my-private-topic" },
-                "publish", new String[] { "*" }
+                "subscribe", new String[] { 
+                    "/channels/{id}",
+                    "/conversations/{id}",
+                },
+                "publish", new String[] {
+                    "/channels/{id}",
+                    "/conversations/{id}"
+                }
         ));
 
         Date tokenCreateTime = new Date();
