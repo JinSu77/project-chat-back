@@ -16,12 +16,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.api.dtos.Messages.MessageDTO;
+import com.example.api.exceptions.HubNotFoundException;
+import com.example.api.exceptions.PublishRejectedException;
+import com.example.api.exceptions.UnauthorizedPublisherException;
 import com.example.api.handlers.ResponseHandler;
 import com.example.api.models.Channel;
 import com.example.api.models.Message;
 import com.example.api.models.User;
 import com.example.api.services.Auth.JwtUtil;
 import com.example.api.services.Channel.ChannelService;
+import com.example.api.services.Mercure.MercureMessage;
+import com.example.api.services.Mercure.MercurePublisher;
 import com.example.api.services.Message.MessagesService;
 
 import jakarta.validation.Valid;
@@ -56,6 +61,7 @@ public class ChannelMessageController {
     public ResponseEntity<Object> store(
         @Valid @RequestBody MessageDTO messageDTO, 
         @RequestHeader("Authorization") String authorization, 
+        @RequestHeader("MercureAuthorization") String mercureAuthorization,
         @PathVariable("channelId") Integer channelId
     ) {
         try {
@@ -64,6 +70,8 @@ public class ChannelMessageController {
             if (channel.isEmpty()) {
                 return ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, null, "Channel not found");
             }
+
+            String mercureToken = mercureAuthorization.replace("Bearer ", "");
 
             String token = authorization.replace("Bearer ", "");
 
@@ -74,8 +82,20 @@ public class ChannelMessageController {
             messagesService.save(message);
 
             channelService.updateMessageRelationship(channel.get(), message);
+         
+            var mercurePublisher = new MercurePublisher("http://mercure/.well-known/mercure", mercureToken);
 
+            var mercureMessage = new MercureMessage(message.toJson(), "/channels/" + channelId);
+
+            mercurePublisher.publish(mercureMessage);
+            
             return ResponseHandler.generateResponse(HttpStatus.CREATED, "message", message);
+        } catch (UnauthorizedPublisherException e) {
+            return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, null, e.getMessage());
+        } catch (PublishRejectedException e) {
+            return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, null, e.getMessage());
+        } catch (HubNotFoundException e) {
+            return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, null, e.getMessage());
         } catch (Exception e) {
             return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }
