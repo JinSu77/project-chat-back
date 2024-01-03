@@ -63,6 +63,10 @@ public class UserContactController {
         @PathVariable("contactId") Integer contactId
     ) {
         try {
+            if (userId.equals(contactId)) {
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Cannot add yourself as a contact");
+            }
+
             List<User> contacts = userService.addContactList(userId, contactId);
 
             return ResponseHandler.generateResponse(HttpStatus.OK, "contacts", contacts);
