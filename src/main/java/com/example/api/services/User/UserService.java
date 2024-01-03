@@ -12,6 +12,7 @@ import com.example.api.dtos.Users.UserDto;
 import com.example.api.models.Conversation;
 import com.example.api.models.Role;
 import com.example.api.models.User;
+import com.example.api.repositories.ConversationRepository;
 import com.example.api.repositories.RoleRepository;
 import com.example.api.repositories.UserRepository;
 import com.example.api.services.Conversation.ConversationService;
@@ -34,6 +35,9 @@ public class UserService implements IUserService {
 
     @Autowired
     private ConversationService conversationService;
+
+    @Autowired
+    private ConversationRepository conversationRepository;
 
     public UserService(
         UserRepository userRepository, 
@@ -201,5 +205,42 @@ public class UserService implements IUserService {
         }
 
         return randomContacts;
+    }
+
+    public void deleteUserContact(Integer userId, Integer contactId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        Optional<User> optionalContact = userRepository.findById(contactId);
+
+        if (optionalUser.isEmpty() || optionalContact.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User or contact not found");
+        }
+
+        User user = optionalUser.get();
+        User contact = optionalContact.get();
+
+        if (! user.getContacts().contains(contact)) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, user.getUsername() + " is not a contact of " + contact.getUsername());
+        }
+
+        if (! contact.getContacts().contains(user)) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, contact.getUsername() + " is not a contact of " + user.getUsername());
+        }
+        
+        user.getContacts().remove(contact);
+        contact.getContacts().remove(user);
+
+        userRepository.save(user);
+        userRepository.save(contact);
+
+        Optional<Conversation> conversation = user.getConversations()
+            .stream()
+            .filter(c -> c.getParticipants().contains(contact))
+            .findFirst();
+
+        if (conversation.isPresent()) {
+            Conversation conversationToDelete = conversation.get();
+
+            conversationRepository.delete(conversationToDelete);
+        }
     }
 }
