@@ -180,11 +180,17 @@ public class UserService implements IUserService {
 
         List<String> contactIds = user.getContacts().stream().map(contact -> contact.getId().toString()).collect(Collectors.toList());
 
-        System.out.println(contactIds);
+        String query;
 
-        String query = "SELECT * FROM users WHERE username != '" + user.getUsername() 
-            + "' AND id NOT IN (" + String.join(",", contactIds) + ")"
-            + " ORDER BY RAND() LIMIT 5";
+        if (contactIds.size() != 0) {
+            query = "SELECT * FROM users WHERE username != '" + user.getUsername() 
+                + "' AND id NOT IN (" + String.join(",", contactIds) + ")"
+                + " ORDER BY RAND() LIMIT 5";
+
+        } else {
+            query = "SELECT * FROM users WHERE username != '" + user.getUsername() 
+                + "' ORDER BY RAND() LIMIT 5";
+        }
 
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(query);
 
