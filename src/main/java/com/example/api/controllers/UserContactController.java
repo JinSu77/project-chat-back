@@ -66,18 +66,46 @@ public class UserContactController {
     @PostMapping("/{contactId}")
     public ResponseEntity<Object> store(
         @PathVariable("userId") Integer userId,
-        @PathVariable("contactId") Integer contactId
+        @PathVariable("contactId") Integer contactId,
+        @RequestHeader("MercureAuthorization") String mercureAuthorization
     ) {
         try {
             if (userId.equals(contactId)) {
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Cannot add yourself as a contact");
             }
 
+            String mercureToken = mercureAuthorization.replace("Bearer ", "");
+
             List<User> contacts = userService.addContactList(userId, contactId);
+
+            User user = userRepository.findById(userId).get();
+            
+            User contact = userRepository.findById(contactId).get();
+
+            var mercurePublisher = new MercurePublisher("http://mercure/.well-known/mercure", mercureToken);
+
+            var pingAuthUser = mercurePublisher.create(
+                "user.contact.created", 
+                contact.toJson(),
+                "/users/" + user.getUsername() + user.getId() + "/contacts",
+                "contacts"
+            );
+
+            var pingContact = mercurePublisher.create(
+                "user.contact.created", 
+                user.toJson(),
+                "/users/" + contact.getUsername() + contact.getId() + "/contacts",
+                "contacts"
+            );
+
+            mercurePublisher.publish(pingContact);
+            mercurePublisher.publish(pingAuthUser);
 
             return ResponseHandler.generateResponse(HttpStatus.OK, "contacts", contacts);
         } catch (ResponseStatusException responseStatusException) {
             return ResponseHandler.generateResponse(responseStatusException, null, responseStatusException.getMessage());
+        } catch (UnauthorizedPublisherException|PublishRejectedException|HubNotFoundException e) {
+            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         } catch (Exception e) {
             return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }
@@ -119,7 +147,7 @@ public class UserContactController {
                 "/users/" + user.getUsername() + user.getId() + "/contacts",
                 "contacts"
             );
-            
+
             mercurePublisher.publish(pingContact);
             mercurePublisher.publish(pingAuthUser);
 
@@ -127,7 +155,7 @@ public class UserContactController {
         } catch (ResponseStatusException responseStatusException) {
             return ResponseHandler.generateResponse(responseStatusException, null, responseStatusException.getMessage());
         } catch (UnauthorizedPublisherException|PublishRejectedException|HubNotFoundException e) {
-            return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, null, e.getMessage());
+            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         } catch (Exception e) {
             return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }

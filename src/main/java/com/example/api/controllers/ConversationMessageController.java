@@ -81,7 +81,7 @@ public class ConversationMessageController {
         
             return ResponseHandler.generateResponse(HttpStatus.OK, "message", message);
         } catch (UnauthorizedPublisherException|PublishRejectedException|HubNotFoundException e) {
-            return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, null, e.getMessage());
+            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         } catch (Exception e) {
             return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }

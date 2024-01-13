@@ -95,7 +95,7 @@ public class ChannelMessageController {
             
             return ResponseHandler.generateResponse(HttpStatus.CREATED, "message", message);
         } catch (UnauthorizedPublisherException|PublishRejectedException|HubNotFoundException e) {
-            return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, null, e.getMessage());
+            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         } catch (Exception e) {
             return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }
