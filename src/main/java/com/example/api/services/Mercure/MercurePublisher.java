@@ -3,6 +3,8 @@ package com.example.api.services.Mercure;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.json.JSONObject;
+
 import com.example.api.exceptions.HubNotFoundException;
 import com.example.api.exceptions.PublishRejectedException;
 import com.example.api.exceptions.UnauthorizedPublisherException;
@@ -17,6 +19,18 @@ public class MercurePublisher {
 
     public MercurePublisher(String mercureHub, String mercureToken) {
         this.MercureHttpClient = new MercureClient(mercureHub, mercureToken);
+    }
+
+    public MercureMessage create(String action, String resource, String topic, String type) {
+            JSONObject json = new JSONObject();
+
+            json.put("resource", resource);
+            json.put("type", type);
+            json.put("action", action);
+
+            var mercureMessage = new MercureMessage(json.toString(), topic);
+
+            return mercureMessage;
     }
 
     public MercureMessage publish(MercureMessage message) throws UnauthorizedPublisherException, PublishRejectedException,

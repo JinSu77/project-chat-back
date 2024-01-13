@@ -207,17 +207,7 @@ public class UserService implements IUserService {
         return randomContacts;
     }
 
-    public void deleteUserContact(Integer userId, Integer contactId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        Optional<User> optionalContact = userRepository.findById(contactId);
-
-        if (optionalUser.isEmpty() || optionalContact.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User or contact not found");
-        }
-
-        User user = optionalUser.get();
-        User contact = optionalContact.get();
-
+    public void deleteUserContact(User user, User contact) {
         if (! user.getContacts().contains(contact)) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, user.getUsername() + " is not a contact of " + contact.getUsername());
         }

@@ -11,12 +11,17 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.api.exceptions.HubNotFoundException;
+import com.example.api.exceptions.PublishRejectedException;
+import com.example.api.exceptions.UnauthorizedPublisherException;
 import com.example.api.handlers.ResponseHandler;
 import com.example.api.models.User;
 import com.example.api.repositories.UserRepository;
+import com.example.api.services.Mercure.MercurePublisher;
 import com.example.api.services.User.UserService;
 
 @Controller
@@ -81,14 +86,48 @@ public class UserContactController {
     @DeleteMapping("/{contactId}")  
     public ResponseEntity<Object> delete(
         @PathVariable("contactId") Integer contactId,
-        @PathVariable("userId") Integer userId
+        @PathVariable("userId") Integer userId,
+        @RequestHeader("MercureAuthorization") String mercureAuthorization
     ) {  
         try {
-            userService.deleteUserContact(userId, contactId);
+            String mercureToken = mercureAuthorization.replace("Bearer ", "");
+
+            Optional<User> optionalUser = userRepository.findById(userId);
+            Optional<User> optionalContact = userRepository.findById(contactId);
+    
+            if (optionalUser.isEmpty() || optionalContact.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "User or contact not found");
+            }
+    
+            User user = optionalUser.get();
+            User contact = optionalContact.get();
+
+            userService.deleteUserContact(user, contact);
+
+            var mercurePublisher = new MercurePublisher("http://mercure/.well-known/mercure", mercureToken);
+
+            var pingContact = mercurePublisher.create(
+                "user.contact.deleted", 
+                user.toJson(),
+                "/users/" + contact.getUsername() + contact.getId() + "/contacts",
+                "contacts"
+            );
+
+            var pingAuthUser = mercurePublisher.create(
+               "user.contact.deleted", 
+                contact.toJson(),
+                "/users/" + user.getUsername() + user.getId() + "/contacts",
+                "contacts"
+            );
+            
+            mercurePublisher.publish(pingContact);
+            mercurePublisher.publish(pingAuthUser);
 
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (ResponseStatusException responseStatusException) {
             return ResponseHandler.generateResponse(responseStatusException, null, responseStatusException.getMessage());
+        } catch (UnauthorizedPublisherException|PublishRejectedException|HubNotFoundException e) {
+            return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, null, e.getMessage());
         } catch (Exception e) {
             return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }

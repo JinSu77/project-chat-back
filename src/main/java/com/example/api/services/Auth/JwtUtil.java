@@ -51,16 +51,17 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String createMercureToken() {
+    public String createMercureToken(User user) {
         Claims claims = Jwts.claims();
         claims.put("mercure", Map.of(
                 "subscribe", new String[] { 
                     "/channels/{id}",
                     "/conversations/{id}",
+                    "/users/" + user.getUsername() + user.getId().toString() + "/contacts",
+
                 },
                 "publish", new String[] {
-                    "/channels/{id}",
-                    "/conversations/{id}"
+                    "*"
                 }
         ));
 

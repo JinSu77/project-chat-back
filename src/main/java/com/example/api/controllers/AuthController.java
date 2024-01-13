@@ -66,7 +66,7 @@ public class AuthController {
                 "message", "logged in successfully",
                 "token", jwtUtil.createToken(user),
                 "user", user,
-                "mercureToken", jwtUtil.createMercureToken()
+                "mercureToken", jwtUtil.createMercureToken(user)
             );
 
             return ResponseHandler.generateResponse(HttpStatus.OK, null, response);

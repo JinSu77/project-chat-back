@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.api.dtos.Messages.MessageDTO;
+import com.example.api.exceptions.HubNotFoundException;
+import com.example.api.exceptions.PublishRejectedException;
+import com.example.api.exceptions.UnauthorizedPublisherException;
 import com.example.api.handlers.ResponseHandler;
 import com.example.api.models.Message;
 import com.example.api.models.User;
 import com.example.api.services.Auth.JwtUtil;
-import com.example.api.services.Mercure.MercureMessage;
 import com.example.api.services.Mercure.MercurePublisher;
 import com.example.api.services.Message.MessagesService;
 
@@ -68,11 +70,18 @@ public class ConversationMessageController {
 
             var mercurePublisher = new MercurePublisher("http://mercure/.well-known/mercure", mercureToken);
 
-            var mercureMessage = new MercureMessage(message.toJson(), "/conversations/" + conversationId);
+            var mercureMessage = mercurePublisher.create(
+                "conversation.message.created", 
+                message.toJson(),
+                "/conversations/" + conversationId,
+                "conversations"
+            );
 
             mercurePublisher.publish(mercureMessage);
         
             return ResponseHandler.generateResponse(HttpStatus.OK, "message", message);
+        } catch (UnauthorizedPublisherException|PublishRejectedException|HubNotFoundException e) {
+            return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, null, e.getMessage());
         } catch (Exception e) {
             return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }

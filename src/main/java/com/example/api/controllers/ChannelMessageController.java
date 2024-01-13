@@ -25,7 +25,6 @@ import com.example.api.models.Message;
 import com.example.api.models.User;
 import com.example.api.services.Auth.JwtUtil;
 import com.example.api.services.Channel.ChannelService;
-import com.example.api.services.Mercure.MercureMessage;
 import com.example.api.services.Mercure.MercurePublisher;
 import com.example.api.services.Message.MessagesService;
 
@@ -82,19 +81,20 @@ public class ChannelMessageController {
             messagesService.save(message);
 
             channelService.updateMessageRelationship(channel.get(), message);
-         
+
             var mercurePublisher = new MercurePublisher("http://mercure/.well-known/mercure", mercureToken);
 
-            var mercureMessage = new MercureMessage(message.toJson(), "/channels/" + channelId);
+            var mercureMessage = mercurePublisher.create(
+                "channel.message.created", 
+                message.toJson(),
+                "/channels/" + channelId,
+                "channels"
+            );
 
             mercurePublisher.publish(mercureMessage);
             
             return ResponseHandler.generateResponse(HttpStatus.CREATED, "message", message);
-        } catch (UnauthorizedPublisherException e) {
-            return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, null, e.getMessage());
-        } catch (PublishRejectedException e) {
-            return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, null, e.getMessage());
-        } catch (HubNotFoundException e) {
+        } catch (UnauthorizedPublisherException|PublishRejectedException|HubNotFoundException e) {
             return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, null, e.getMessage());
         } catch (Exception e) {
             return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());

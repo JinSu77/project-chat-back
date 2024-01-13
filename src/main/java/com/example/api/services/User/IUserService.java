@@ -14,5 +14,5 @@ public interface IUserService {
     User login(UserLoginDTO userLoginDTO);
     void save(UserDto userDto);
     List<User> getRandomContactListFor(User user);
-    void deleteUserContact(Integer userId, Integer contactId);
+    void deleteUserContact(User user, User contact);
 }
