@@ -19,6 +19,7 @@ import com.example.api.exceptions.HubNotFoundException;
 import com.example.api.exceptions.PublishRejectedException;
 import com.example.api.exceptions.UnauthorizedPublisherException;
 import com.example.api.handlers.ResponseHandler;
+import com.example.api.models.Conversation;
 import com.example.api.models.User;
 import com.example.api.repositories.UserRepository;
 import com.example.api.services.Mercure.MercurePublisher;
@@ -79,28 +80,48 @@ public class UserContactController {
             List<User> contacts = userService.addContactList(userId, contactId);
 
             User user = userRepository.findById(userId).get();
-            
             User contact = userRepository.findById(contactId).get();
+
+            Conversation conversation = user.getConversations().stream()
+                .filter(c -> c.getParticipants().contains(user) && c.getParticipants().contains(contact))
+                .findFirst()
+                .get();
 
             var mercurePublisher = new MercurePublisher("http://mercure/.well-known/mercure", mercureToken);
 
-            var pingAuthUser = mercurePublisher.create(
+            var pingNewContactToAuthUser = mercurePublisher.create(
                 "user.contact.created", 
                 contact.toJson(),
-                "/users/" + user.getUsername() + user.getId() + "/contacts",
+                "/users/" + user.getUsername() + user.getId(),
                 "contacts"
             );
 
-            var pingContact = mercurePublisher.create(
+            var pingNewContactToContactUser = mercurePublisher.create(
                 "user.contact.created", 
                 user.toJson(),
-                "/users/" + contact.getUsername() + contact.getId() + "/contacts",
+                "/users/" + contact.getUsername() + contact.getId(),
                 "contacts"
             );
 
-            mercurePublisher.publish(pingContact);
-            mercurePublisher.publish(pingAuthUser);
+            var pingNewConversationToAuthUser = mercurePublisher.create(
+                "user.conversation.created", 
+                conversation.toJson(),
+                "/users/" + user.getUsername() + user.getId(),
+                "conversations"
+            );
 
+            var pingNewConversationToContactUser = mercurePublisher.create(
+                "user.conversation.created", 
+                conversation.toJson(),
+                "/users/" + contact.getUsername() + contact.getId(),
+                "conversations"
+            );
+
+            mercurePublisher.publish(pingNewContactToAuthUser);
+            mercurePublisher.publish(pingNewConversationToAuthUser);
+            mercurePublisher.publish(pingNewContactToContactUser);
+            mercurePublisher.publish(pingNewConversationToContactUser);
+            
             return ResponseHandler.generateResponse(HttpStatus.OK, "contacts", contacts);
         } catch (ResponseStatusException responseStatusException) {
             return ResponseHandler.generateResponse(responseStatusException, null, responseStatusException.getMessage());
@@ -137,14 +158,14 @@ public class UserContactController {
             var pingContact = mercurePublisher.create(
                 "user.contact.deleted", 
                 user.toJson(),
-                "/users/" + contact.getUsername() + contact.getId() + "/contacts",
+                "/users/" + contact.getUsername() + contact.getId(),
                 "contacts"
             );
 
             var pingAuthUser = mercurePublisher.create(
                "user.contact.deleted", 
                 contact.toJson(),
-                "/users/" + user.getUsername() + user.getId() + "/contacts",
+                "/users/" + user.getUsername() + user.getId(),
                 "contacts"
             );
 

@@ -57,8 +57,7 @@ public class JwtUtil {
                 "subscribe", new String[] { 
                     "/channels/{id}",
                     "/conversations/{id}",
-                    "/users/" + user.getUsername() + user.getId().toString() + "/contacts",
-
+                    "/users/" + user.getUsername() + user.getId().toString(),
                 },
                 "publish", new String[] {
                     "*"
