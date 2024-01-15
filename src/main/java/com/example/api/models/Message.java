@@ -56,6 +56,11 @@ public class Message extends Model {
     @JsonIgnoreProperties({"messages"})
     private Channel channel = null;
 
+    @Column(nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Europe/Paris")
+    private Date deleted_at;
+
     public void setContent(String content) {
         this.content = content;
     }
@@ -78,5 +83,9 @@ public class Message extends Model {
 
     public void setCreatedAt(Date created_at) {
         this.created_at = created_at;
+    }
+
+    public void setDeletedAt(Date deleted_at) {
+        this.deleted_at = deleted_at;
     }
 }
