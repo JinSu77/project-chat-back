@@ -1,5 +1,7 @@
 package com.example.api.services.Message;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,6 +59,22 @@ public class MessagesService implements IMessagesService {
         }
 
         return message.get();
+    }
+
+    public Message update(Integer id, Message updatedMessage) {
+        Optional<Message> existingMessage = messageRepository.findById(id);
+
+        if (existingMessage.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found");
+        }
+
+        Message messageToUpdate = existingMessage.get();
+        messageToUpdate.setContent(updatedMessage.getContent());
+        messageToUpdate.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
+
+        messageRepository.save(messageToUpdate);
+
+        return messageToUpdate;
     }
 
     public void delete(Integer id)   

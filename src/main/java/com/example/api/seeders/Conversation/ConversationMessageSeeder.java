@@ -29,12 +29,14 @@ public class ConversationMessageSeeder {
             String username = jdbc.queryForObject("SELECT username FROM users WHERE id = " + userId, String.class);
             String content = messages[faker.random().nextInt(0, messages.length - 1)].replace("'", "''");
 
-            jdbc.execute("INSERT INTO messages (content, conversation_id, created_at, user_id, username) VALUES " 
+            jdbc.execute("INSERT INTO messages (content, conversation_id, created_at, updated_at, user_id, username) VALUES " 
                 + "('" 
                 + content
                 + "', '" 
                 + conversationId
                 + "', '" 
+                + Timestamp.valueOf(LocalDateTime.now())
+                + "', '"
                 + Timestamp.valueOf(LocalDateTime.now())
                 + "', '" 
                 + userId
