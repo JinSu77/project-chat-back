@@ -59,6 +59,21 @@ public class MessagesService implements IMessagesService {
         return message.get();
     }
 
+    public Message update(Integer id, Message updatedMessage) {
+        Optional<Message> existingMessage = messageRepository.findById(id);
+
+        if (existingMessage.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found");
+        }
+
+        Message messageToUpdate = existingMessage.get();
+        messageToUpdate.setContent(updatedMessage.getContent());
+
+        messageRepository.save(messageToUpdate);
+
+        return messageToUpdate;
+    }
+
     public void delete(Integer id)   
     {  
         Optional<Message> message = messageRepository.findById(id);

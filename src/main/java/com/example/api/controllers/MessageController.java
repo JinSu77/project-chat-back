@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -33,6 +35,19 @@ public class MessageController {
             return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }
     }  
+
+    @PutMapping("/{messageId}")
+    public ResponseEntity<Object> update(@PathVariable("messageId") int messageId, @RequestBody Message updatedMessage) {
+        try {
+            Message updated = messagesService.update(messageId, updatedMessage);
+
+            return ResponseHandler.generateResponse(HttpStatus.OK, "message", updated);
+        } catch (ResponseStatusException responseStatusException) {
+            return ResponseHandler.generateResponse(responseStatusException, null, responseStatusException.getMessage());
+        } catch (Exception e) {
+            return ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, e.getMessage());
+        }
+    }
 
     @DeleteMapping("/{messageId}")  
     public ResponseEntity<Object> delete(@PathVariable("messageId") int messageId)
