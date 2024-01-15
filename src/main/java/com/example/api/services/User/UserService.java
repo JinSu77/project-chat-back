@@ -51,7 +51,8 @@ public class UserService implements IUserService {
 
     @Override
     public User login(UserLoginDTO userLoginDTO) {
-        User user = userRepository.findByUsername(userLoginDTO.getUsername());
+        String lowercaseUsername = userLoginDTO.getUsername().toLowerCase();
+        User user = userRepository.findByUsername(lowercaseUsername);
 
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Username %s not found", userLoginDTO.getUsername()));
