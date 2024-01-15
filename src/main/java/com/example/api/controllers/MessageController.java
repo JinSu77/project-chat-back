@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.api.dtos.Messages.MessageDTO;
 import com.example.api.handlers.ResponseHandler;
 import com.example.api.models.Message;
 import com.example.api.services.Message.MessagesService;
@@ -37,7 +38,7 @@ public class MessageController {
     }  
 
     @PutMapping("/{messageId}")
-    public ResponseEntity<Object> update(@PathVariable("messageId") int messageId, @RequestBody Message updatedMessage) {
+    public ResponseEntity<Object> update(@PathVariable("messageId") int messageId, @RequestBody MessageDTO updatedMessage) {
         try {
             Message updated = messagesService.update(messageId, updatedMessage);
 

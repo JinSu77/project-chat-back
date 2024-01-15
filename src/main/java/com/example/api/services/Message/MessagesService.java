@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.api.dtos.Messages.MessageDTO;
 import com.example.api.models.Channel;
 import com.example.api.models.Conversation;
 import com.example.api.models.Message;
@@ -61,7 +62,7 @@ public class MessagesService implements IMessagesService {
         return message.get();
     }
 
-    public Message update(Integer id, Message updatedMessage) {
+    public Message update(Integer id, MessageDTO updatedMessage) {
         Optional<Message> existingMessage = messageRepository.findById(id);
 
         if (existingMessage.isEmpty()) {
@@ -69,11 +70,14 @@ public class MessagesService implements IMessagesService {
         }
 
         Message messageToUpdate = existingMessage.get();
-        messageToUpdate.setContent(updatedMessage.getContent());
-        messageToUpdate.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
 
-        messageRepository.save(messageToUpdate);
-
+        if (updatedMessage.getContent() != null && !updatedMessage.getContent().isEmpty()) {
+            messageToUpdate.setContent(updatedMessage.getContent());
+            messageToUpdate.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
+    
+            messageRepository.save(messageToUpdate);
+        }
+    
         return messageToUpdate;
     }
 
