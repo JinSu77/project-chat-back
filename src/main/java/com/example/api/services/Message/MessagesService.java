@@ -1,5 +1,7 @@
 package com.example.api.services.Message;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,6 +70,7 @@ public class MessagesService implements IMessagesService {
 
         Message messageToUpdate = existingMessage.get();
         messageToUpdate.setContent(updatedMessage.getContent());
+        messageToUpdate.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
 
         messageRepository.save(messageToUpdate);
 
