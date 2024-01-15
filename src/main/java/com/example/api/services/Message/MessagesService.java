@@ -1,5 +1,7 @@
 package com.example.api.services.Message;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,13 +63,15 @@ public class MessagesService implements IMessagesService {
 
     public void delete(Integer id)   
     {  
-        Optional<Message> message = messageRepository.findById(id);
+        Optional<Message> messageOptional = messageRepository.findById(id);
 
-        if (message.isEmpty()) {
+        if (messageOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found");    
         }
 
-        messageRepository.delete(message.get());
+        Message message = messageOptional.get();
+        message.setDeletedAt(Timestamp.valueOf(LocalDateTime.now()));
+        messageRepository.save(message);
     }  
 
     public void save(Message message) {
